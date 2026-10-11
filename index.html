@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>신나는 인공지능(AI) 코딩 캠프</title>
+    <!-- 프리텐다드 웹 폰트 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <style>
+        * { box-sizing: border-box; word-break: keep-all; }
+        
+body {
+    font-family: 'Pretendard', sans-serif;
+    background-color: #e3fafc; /* 시원한 민트색 바탕 */
+    text-align: center;
+    margin: 0;
+    padding: 50px 20px;
+    color: #212529;
+}
+
+        h1 {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 4em;
+            margin: 0 0 15px 0;
+            font-weight: 900;
+            text-shadow: 4px 4px 0px #3bc9db; 
+        }
+
+        .main-subtitle {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 1.5em;
+            margin: 0 0 50px 0;
+            font-weight: 700;
+            background-color: #ffffff;
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: 3px solid #212529;
+            box-shadow: 4px 4px 0px #212529;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            gap: 25px; 
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 25px;
+            border: 4px solid #212529; 
+            box-shadow: 6px 6px 0px #212529; 
+            width: 230px; 
+            padding: 30px 20px;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative; 
+        }
+
+        .card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0px #212529;
+        }
+
+        .step-badge {
+            position: absolute;
+            top: -20px; 
+            background-color: #ffe066; 
+            color: #212529; 
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 1.2em;
+            font-weight: 900;
+            border: 4px solid #212529;
+            z-index: 2;
+        }
+
+        .icon-box {
+            font-size: 3.5em; 
+            margin-top: 10px;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .icon-box {
+            transform: scale(1.1) rotate(5deg); 
+        }
+
+        .card h2 {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 1.4em; 
+            margin: 10px 0 25px 0; 
+            font-weight: 800;
+            color: #212529;
+        }
+
+        .btn {
+            font-family: 'Pretendard', sans-serif;
+            display: inline-block;
+            text-decoration: none;
+            color: #212529; 
+            font-size: 1.2em; 
+            padding: 12px 0; 
+            border-radius: 15px; 
+            border: 3px solid #212529; 
+            width: 100%; 
+            font-weight: 800;
+            box-shadow: 3px 3px 0px #212529; 
+            transition: all 0.1s ease;
+            margin-top: auto;
+        }
+
+        /* 1차시 활성화 버튼 (핑크색 포인트) */
+        .btn-active {
+            background-color: #ff8787;
+        }
+        .btn-active:hover { background-color: #ff6b6b; }
+        .btn-active:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0px 0px 0px #212529;
+        }
+        
+        /* 2~8차시 비활성화 버튼 */
+        .btn-locked {
+            background-color: #e9ecef;
+            color: #868e96;
+            cursor: not-allowed;
+            box-shadow: 3px 3px 0px #ced4da;
+            border-color: #ced4da;
+        }
+        .btn-locked:hover { background-color: #e9ecef; }
+        
+    </style>
+</head>
+<body>
+
+    <h1 style="font-family: 'Pretendard', sans-serif;">🚀 신나는 인공지능 캠프</h1>
+    <p class="main-subtitle" style="font-family: 'Pretendard', sans-serif;">우리의 멋진 8주간의 여정! 오늘 수업할 차시를 선택해 주세요.</p>
+
+    <div class="container">
+        <!-- 1차시 -->
+        <div class="card">
+            <div class="step-badge" style="font-family: 'Pretendard', sans-serif;">1차시</div>
+            <div class="icon-box">🎪✨</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">AI 체험 놀이터</h2>
+            <!-- ★ 여기에 class1.html 이 완벽하게 연결되어 있습니다! ★ -->
+            <a href="class1.html" class="btn btn-active" style="font-family: 'Pretendard', sans-serif;">입장하기 🚀</a>
+        </div>
+
+        <!-- 2차시 -->
+        <div class="card">
+            <div class="step-badge" style="font-family: 'Pretendard', sans-serif;">2차시</div>
+            <div class="icon-box">📸🐶</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">티처블 머신</h2>
+            <a href="#" class="btn btn-locked" style="font-family: 'Pretendard', sans-serif;">준비 중 🔒</a>
+        </div>
+
+        <!-- 3차시 -->
+        <div class="card">
+            <div class="step-badge" style="font-family: 'Pretendard', sans-serif;">3차시</div>
+            <div class="icon-box">🧑‍🦱🔍</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">얼굴 인식</h2>
+            <a href="#" class="btn btn-locked" style="font-family: 'Pretendard', sans-serif;">준비 중 🔒</a>
+        </div>
+
+        <!-- 4차시 -->
+        <div class="card">
+            <div class="step-badge" style="font-family: 'Pretendard', sans-serif;">4차시</div>
+            <div class="icon-box">🚶‍♂️👀</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">사람 인식</h2>
+            <a href="#" class="btn btn-locked" style="font-family: 'Pretendard', sans-serif;">준비 중 🔒</a>
+        </div>
+
+        <!-- 5차시 -->
+        <div class="card">
+            <div class="step-badge" style="font-family: 'Pretendard', sans-serif;">5차시</div>
+            <div class="icon-box">🤸‍♀️🎮</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">동작 인식</h2>
+            <a href="#" class="btn btn-locked" style="font-family: 'Pretendard', sans-serif;">준비 중 🔒</a>
+        </div>
+
+        <!-- 6차시 -->
+        <div class="card">
+            <div class="step-badge" style="font-family: 'Pretendard', sans-serif;">6차시</div>
+            <div class="icon-box">🔠🔎</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">문자 인식</h2>
+            <a href="#" class="btn btn-locked" style="font-family: 'Pretendard', sans-serif;">준비 중 🔒</a>
+        </div>
+
+        <!-- 7차시 -->
+        <div class="card">
+            <div class="step-badge" style="font-family: 'Pretendard', sans-serif;">7차시</div>
+            <div class="icon-box">🪄🖼️</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">생성형 AI</h2>
+            <a href="#" class="btn btn-locked" style="font-family: 'Pretendard', sans-serif;">준비 중 🔒</a>
+        </div>
+
+        <!-- 8차시 -->
+        <div class="card">
+            <div class="step-badge" style="font-family: 'Pretendard', sans-serif;">8차시</div>
+            <div class="icon-box">⚖️🤔</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">AI 윤리</h2>
+            <a href="#" class="btn btn-locked" style="font-family: 'Pretendard', sans-serif;">준비 중 🔒</a>
+        </div>
+    </div>
+
+</body>
+</html>

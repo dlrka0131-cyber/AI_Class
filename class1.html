@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1차시: 신나는 인공지능(AI) 체험 놀이터</title>
+    <!-- 프리텐다드 웹 폰트 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            word-break: keep-all;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #fff9db;
+            background-image: radial-gradient(#ffffff 15%, transparent 16%), radial-gradient(#ffffff 15%, transparent 16%);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            text-align: center;
+            margin: 0;
+            padding: 30px 20px 50px 20px; /* 상단 여백 약간 조절 */
+            color: #212529;
+        }
+
+        /* ---------------- [ 처음으로(홈) 버튼 ] ---------------- */
+        .header-nav {
+            max-width: 1050px;
+            margin: 0 auto 20px auto;
+            text-align: left; /* 왼쪽 정렬 */
+        }
+
+        .btn-home {
+            font-family: 'Pretendard', sans-serif;
+            display: inline-block;
+            text-decoration: none;
+            background-color: #ffffff;
+            color: #212529;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 4px solid #212529;
+            font-weight: 800;
+            box-shadow: 4px 4px 0px #212529;
+            transition: all 0.1s ease;
+        }
+
+        .btn-home:hover { background-color: #f8f9fa; }
+        .btn-home:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #212529;
+        }
+
+        /* ---------------- [ 헤더 부분 ] ---------------- */
+        h1 {
+            font-family: 'Pretendard', sans-serif;
+            color: #212529;
+            font-size: 3.5em;
+            margin: 0 0 50px 0; 
+            font-weight: 900;
+            text-shadow: 4px 4px 0px #ffe066; 
+        }
+
+        /* ---------------- [ 섹션(구역) 컨테이너 ] ---------------- */
+        .section {
+            background-color: #ffffff;
+            border: 4px solid #212529; 
+            border-radius: 40px;
+            padding: 40px 30px;
+            margin-bottom: 50px;
+            max-width: 1050px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 8px 8px 0px #212529; 
+        }
+
+        .section-quiz { background-color: #fff0f6; }
+        .section-collab { background-color: #e3fafc; }
+
+        .section-title {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 2em;
+            color: #212529;
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+
+        .section-desc {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 1.2em;
+            color: #f03e3e;
+            margin: 0 0 35px 0;
+            font-weight: 700;
+        }
+
+        /* ---------------- [ 카드 레이아웃 ] ---------------- */
+        .container {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            gap: 25px; 
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 25px;
+            border: 4px solid #212529; 
+            box-shadow: 6px 6px 0px #212529; 
+            width: 210px; 
+            padding: 25px 20px;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative; 
+        }
+
+        .card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 10px 10px 0px #212529;
+        }
+
+        /* ---------------- [ 카드 내부 요소 ] ---------------- */
+        .card-number {
+            position: absolute;
+            top: -15px; 
+            left: -15px;
+            background-color: #ffe066; 
+            color: #212529; 
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 1.5em;
+            font-weight: 900;
+            border: 4px solid #212529;
+            z-index: 2; 
+        }
+
+        .icon-box {
+            font-size: 3.5em; 
+            margin-top: 15px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .icon-box {
+            transform: scale(1.1) rotate(5deg); 
+        }
+
+        .card h2 {
+            font-family: 'Pretendard', sans-serif;
+            color: #212529;
+            font-size: 1.3em; 
+            margin: 0 0 25px 0;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* ---------------- [ 장난감 같은 버튼 디자인 ] ---------------- */
+        .btn {
+            font-family: 'Pretendard', sans-serif;
+            display: inline-block;
+            text-decoration: none;
+            color: #212529; 
+            font-size: 1.1em; 
+            padding: 12px 0; 
+            border-radius: 15px; 
+            border: 3px solid #212529; 
+            width: 100%; 
+            font-weight: 800;
+            margin-top: auto; 
+            box-shadow: 3px 3px 0px #212529; 
+            transition: all 0.1s ease;
+        }
+
+        .btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0px 0px 0px #212529;
+        }
+
+        /* ---------------- [ 톡톡 튀는 캔디 컬러 포인트 ] ---------------- */
+        .btn-face { background-color: #ff8787; }
+        .btn-face:hover { background-color: #ff6b6b; }
+        
+        .btn-odd { background-color: #ffd43b; }
+        .btn-odd:hover { background-color: #fcc419; }
+        
+        .btn-say { background-color: #da77f2; }
+        .btn-say:hover { background-color: #cc5de8; }
+        
+        .btn-quick { background-color: #4dabf7; }
+        .btn-quick:hover { background-color: #339af0; }
+
+        .btn-auto { background-color: #9775fa; }
+        .btn-auto:hover { background-color: #845ef7; }
+        
+        .btn-noni { background-color: #69db7c; }
+        .btn-noni:hover { background-color: #51cf66; }
+
+    </style>
+</head>
+<body>
+
+    <!-- 홈으로 돌아가는 네비게이션 바 -->
+    <div class="header-nav">
+        <!-- index.html로 연결됩니다 -->
+        <a href="index.html" class="btn-home">🏠 처음으로</a>
+    </div>
+
+    <h1 style="font-family: 'Pretendard', sans-serif;">🤖 인공지능 체험 놀이터</h1>
+
+    <!-- ================== [ 첫 번째 구역: AI 결과물 분석하기 ] ================== -->
+    <div class="section section-quiz">
+        <h2 class="section-title" style="font-family: 'Pretendard', sans-serif;">🔍 AI 결과물 분석하기 (AI 판별)</h2>
+        <p class="section-desc" style="font-family: 'Pretendard', sans-serif;">AI가 감쪽같이 만든 것을 사람이 맞혀요!</p>
+        
+        <div class="container">
+            <!-- 1. 진짜 얼굴 찾기 -->
+            <div class="card">
+                <div class="card-number" style="font-family: 'Pretendard', sans-serif;">1</div>
+                <div class="icon-box">👤❓</div>
+                <h2 style="font-family: 'Pretendard', sans-serif;">진짜 얼굴 찾기</h2>
+                <a href="https://www.whichfaceisreal.com/" target="_blank" class="btn btn-face" style="font-family: 'Pretendard', sans-serif;">GO!</a>
+            </div>
+
+            <!-- 2. 가짜 그림 찾기 -->
+            <div class="card">
+                <div class="card-number" style="font-family: 'Pretendard', sans-serif;">2</div>
+                <div class="icon-box">🕵️‍♂️🖼️</div>
+                <h2 style="font-family: 'Pretendard', sans-serif;">가짜 그림 찾기</h2>
+                <a href="https://artsandculture.google.com/experiment/odd-one-out/wAHNn4JsVTFOiw?hl=en" target="_blank" class="btn btn-odd" style="font-family: 'Pretendard', sans-serif;">GO!</a>
+            </div>
+            
+            <!-- 3. Say What You See -->
+            <div class="card">
+                <div class="card-number" style="font-family: 'Pretendard', sans-serif;">3</div>
+                <div class="icon-box">🔠💬</div>
+                <h2 style="font-family: 'Pretendard', sans-serif;">AI 프롬프트 맞히기</h2>
+                <a href="https://artsandculture.google.com/experiment/say-what-you-see/jwG3m7wQShZngw?hl=en" target="_blank" class="btn btn-say" style="font-family: 'Pretendard', sans-serif;">GO!</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================== [ 두 번째 구역: AI와 함께 창작하기 ] ================== -->
+    <div class="section section-collab">
+        <h2 class="section-title" style="font-family: 'Pretendard', sans-serif;">🎨 AI와 함께 창작하기 (AI 협업)</h2>
+        <p class="section-desc" style="font-family: 'Pretendard', sans-serif;">사람이 엉성하게 그려도, AI가 똑똑하게 완성해요!</p>
+        
+        <div class="container">
+            <!-- 4. Quick, Draw! -->
+            <div class="card">
+                <div class="card-number" style="font-family: 'Pretendard', sans-serif;">4</div>
+                <div class="icon-box">✏️⏱️</div>
+                <h2 style="font-family: 'Pretendard', sans-serif;">퀵 드로우</h2>
+                <a href="https://quickdraw.withgoogle.com/" target="_blank" class="btn btn-quick" style="font-family: 'Pretendard', sans-serif;">GO!</a>
+            </div>
+
+            <!-- 5. AutoDraw -->
+            <div class="card">
+                <div class="card-number" style="font-family: 'Pretendard', sans-serif;">5</div>
+                <div class="icon-box">🪄🎨</div>
+                <h2 style="font-family: 'Pretendard', sans-serif;">오토드로우</h2>
+                <a href="https://www.autodraw.com/" target="_blank" class="btn btn-auto" style="font-family: 'Pretendard', sans-serif;">GO!</a>
+            </div>
+
+            <!-- 6. 노니 (Noni) -->
+            <div class="card">
+                <div class="card-number" style="font-family: 'Pretendard', sans-serif;">6</div>
+                <div class="icon-box">🎨✨</div>
+                <h2 style="font-family: 'Pretendard', sans-serif;">노니 (Noni)</h2>
+                <a href="https://noni.cmiscm.com/" target="_blank" class="btn btn-noni" style="font-family: 'Pretendard', sans-serif;">GO!</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
