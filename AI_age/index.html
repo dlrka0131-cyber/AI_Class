@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 마법 거울: 내 나이 맞추기</title>
+    
+    <!-- 깔끔한 프리텐다드(Pretendard) 폰트 불러오기 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    
+    <!-- 얼굴 인식 AI 로봇 두뇌 -->
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            text-align: center;
+            /* 나이 테스트는 약간 오렌지~피치 그라데이션으로 차별화 */
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            margin: 0;
+            padding: 15px;
+            height: 100vh; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+            gap: 15px; 
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        /* 🏠 처음으로 버튼 스타일 (AI_age 폴더에서 메인으로) */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            background-color: #ffffff;
+            color: #ff6b81;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: 800;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 3px solid #ff6b81;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .home-btn:hover {
+            background-color: #ff6b81;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            color: #ffffff;
+            font-size: 38px; 
+            font-weight: 800;
+            text-shadow: 2px 2px 0px #ff4757, 4px 4px 0px rgba(0,0,0,0.1);
+            margin: 0;
+        }
+
+        #status-bar {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2f3542;
+            padding: 10px 25px;
+            background-color: #ffffff;
+            border: 3px dashed #ff6b81;
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #video-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            width: 90%;
+            max-width: 600px; 
+            margin-bottom: 15px; 
+        }
+
+        #video-container {
+            border: 8px solid #ffffff;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background-color: #2d3436;
+            width: 100%;
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); 
+        }
+
+        /* 결과 말풍선 디자인 */
+        #result-box {
+            position: absolute;
+            bottom: -25px;
+            background-color: #ffffff;
+            padding: 15px 35px;
+            border-radius: 40px;
+            border: 5px solid #ff6b81;
+            font-size: 26px;
+            font-weight: 800;
+            color: #ff4757;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            z-index: 10;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .notice {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: rgba(255, 107, 129, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🏠 메인 화면으로 돌아가는 버튼 -->
+    <a href="../class2.html" class="home-btn">🏠 처음으로</a>
+
+    <h1>✨ AI 마법 거울: 내 나이 맞추기 ✨</h1>
+    
+    <div id="status-bar">AI 마법사 소환 중... 🧙‍♂️ (잠시만 기다려주세요)</div>
+    
+    <div id="video-wrapper">
+        <div id="video-container">
+            <video id="video" autoplay muted playsinline></video>
+        </div>
+        <div id="result-box">얼굴을 보여주세요! 👀</div>
+    </div>
+
+    <div class="notice">💡 안내: 빛이나 표정에 따라 나이가

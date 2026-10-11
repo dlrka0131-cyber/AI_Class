@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 마법 사진관: 스노우 카메라</title>
+    
+    <!-- 프리텐다드 폰트 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    
+    <!-- 얼굴 인식 및 이목구비(랜드마크) AI 로봇 두뇌 -->
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            text-align: center;
+            /* 3차시는 신비로운 퍼플~민트 그라데이션 */
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+            margin: 0;
+            padding: 15px;
+            height: 100vh; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+            gap: 15px; 
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            background-color: #ffffff;
+            color: #8e44ad;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: 800;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 3px solid #8e44ad;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        .home-btn:hover {
+            background-color: #8e44ad;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            color: #ffffff;
+            font-size: 38px; 
+            font-weight: 800;
+            text-shadow: 2px 2px 0px #8e44ad, 4px 4px 0px rgba(0,0,0,0.1);
+            margin: 0;
+        }
+
+        #status-bar {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2f3542;
+            padding: 10px 25px;
+            background-color: #ffffff;
+            border: 3px dashed #8e44ad;
+            border-radius: 30px;
+        }
+
+        /* 비디오와 그림(캔버스)을 겹치기 위한 래퍼 */
+        #video-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 600px; 
+            aspect-ratio: 4/3;
+            border: 8px solid #ffffff;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background-color: #2d3436;
+        }
+
+        /* 비디오와 캔버스를 똑같은 위치에 거울 모드로 겹칩니다 */
+        video, canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* 거울 모드 좌우 반전 */
+        }
+
+        /* 필터 선택 버튼들 */
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            z-index: 10;
+        }
+
+        .filter-btn {
+            background-color: #ffffff;
+            border: 4px solid #8e44ad;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+            font-family: 'Pretendard', sans-serif;
+            font-weight: bold;
+            color: #2f3542;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-5px);
+            background-color: #f1f2f6;
+        }
+
+        .filter-btn.active {
+            background-color: #8e44ad;
+            color: white;
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 🏠 3차시(또는 메인) 화면으로 돌아가는 버튼 -->
+    <a href="../index.html" class="home-btn">🏠 처음으로</a>
+
+    <h1>✨ AI 마법 사진관 (스노우 필터) ✨</h1>
+    
+    <div id="status-bar">AI 마법사 소환 중... 🧙‍♂️ (잠시만 기다려주세요)</div>
+    
+    <div id="video-wrapper">
+        <video id="video" autoplay muted playsinline></video>
+        <!-- 이 캔버스 위에 투명하게 이모티콘을 그립니다 -->
+        <canvas id="overlay"></canvas> 
+    </div>
+
+    <!-- 필터 선택 버튼 -->
+    <div class="filter-container">
+        <button class="filter-btn active" onclick="changeFilter('none', this)">❌ 끄기</button>
+        <button class="filter-btn" onclick="changeFilter('pig', this)">🐽 돼지코</button>
+        <button class="filter-btn" onclick="changeFilter('sunglasses', this)">🕶️ 선글라스</button>
+        <button class="filter-btn" onclick="changeFilter('crown', this)">👑 왕관</button>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('overlay');
+        const ctx = canvas.getContext('2d');
+        const statusBar = document.getElementById('status-bar');
+
+        let currentFilter = 'none'; // 현재 선택된 필터 (초기값: 없음)
+
+        // 모델 파일 경로 (이번에는 이목구비 찾는 faceLandmark68Net 추가!)
+        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+
+        Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+            faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL) // 눈,코,입 좌표 모델
+        ]).then(startVideo)
+          .catch(err => {
+              statusBar.innerText = "❌ AI 소환 실패! 인터넷 연결을 확인해 주세요.";
+              statusBar.style.borderColor = "#ff4757";
+          });
+
+        function startVideo() {
+            statusBar.innerText = "상단의 '카메라 허용'을 꼭 눌러주세요! 📷";
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    statusBar.innerText = "분석 완료! 아래에서 필터를 골라보세요 ✨";
+                    statusBar.style.borderColor = "#55efc4";
+                })
+                .catch(err => {
+                    statusBar.innerHTML = "❌ 카메라 연결 실패! 깃허브에 올려야 켜집니다!";
+                    statusBar.style.borderColor = "#ff4757";
+                });
+        }
+
+        // 버튼 클릭 시 필터 변경
+        function changeFilter(filterName, btnElement) {
+            currentFilter = filterName;
+            
+            // 모든 버튼에서 active 클래스 제거 후, 누른 버튼에만 추가
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+
+        video.addEventListener('play', () => {
+            // 비디오 크기에 맞춰 캔버스 크기 설정
+            const displaySize = { width: video.videoWidth || 640, height: video.videoHeight || 480 };
+            canvas.width = displaySize.width;
+            canvas.height = displaySize.height;
+
+            setInterval(async () => {
+                // 이번에는 표정 대신 '랜드마크(이목구비)'를 가져옵니다.
+                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks();
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+                
+                // 이전 프레임에 그린 그림 지우기
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (resizedDetections && resizedDetections.length > 0 && currentFilter !== 'none') {
+                    // 모든 사람의 얼굴에 필터 씌우기 (여러 명 가능!)
+                    resizedDetections.forEach(detection => {
+                        const landmarks = detection.landmarks;
+                        
+                        // 얼굴 부위별 위치(좌표) 가져오기
+                        const nose = landmarks.getNose();
+                        const leftEye = landmarks.getLeftEye();
+                        const rightEye = landmarks.getRightEye();
+                        const jaw = landmarks.getJawOutline();
+                        
+                        // 얼굴 너비 (필터 크기를 조절하기 위해)
+                        const faceWidth = jaw[16].x - jaw[0].x;
+
+                        // 이모티콘을 가운데 정렬로 그리기 설정
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+
+                        if (currentFilter === 'pig') {
+                            // 돼지코: 코 끝부분(nose[3] 또는 nose[6]) 좌표에 그리기
+                            const nosePoint = nose[4]; 
+                            ctx.font = `${faceWidth * 0.6}px Arial`;
+                            ctx.fillText('🐽', nosePoint.x, nosePoint.y + 10);
+                        } 
+                        else if (currentFilter === 'sunglasses') {
+                            // 선글라스: 왼쪽 눈과 오른쪽 눈 사이의 중간 좌표에 그리기
+                            const eyeCenterX = (leftEye[0].x + rightEye[3].x) / 2;
+                            const eyeCenterY = (leftEye[0].y + rightEye[3].y) / 2;
+                            ctx.font = `${faceWidth * 0.9}px Arial`;
+                            ctx.fillText('🕶️', eyeCenterX, eyeCenterY);
+                        } 
+                        else if (currentFilter === 'crown') {
+                            // 왕관: 눈보다 한참 위쪽(이마) 좌표에 그리기
+                            const foreheadX = (leftEye[0].x + rightEye[3].x) / 2;
+                            const foreheadY = leftEye[0].y - (faceWidth * 0.5);
+                            ctx.font = `${faceWidth * 0.8}px Arial`;
+                            ctx.fillText('👑', foreheadX, foreheadY);
+                        }
+                    });
+                }
+            }, 100); // 아주 부드럽게 따라다니도록 0.1초(100ms)마다 갱신
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 마법 거울: 내 성격 테스트</title>
+    
+    <!-- 깔끔한 프리텐다드(Pretendard) 폰트 불러오기 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+    
+    <!-- 얼굴 인식 AI 로봇 두뇌 -->
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            margin: 0;
+            padding: 15px;
+            height: 100vh; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+            gap: 15px; 
+            overflow: hidden; 
+            position: relative; /* 홈 버튼 기준점 역할 */
+        }
+
+        /* 🏠 처음으로 버튼 스타일 */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            background-color: #ffffff;
+            color: #ff4757;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 20px;
+            font-weight: 800;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 3px solid #ff4757;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        /* 홈 버튼에 마우스를 올렸을 때 효과 */
+        .home-btn:hover {
+            background-color: #ff4757;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            color: #ff4757;
+            font-size: 38px; 
+            font-weight: 800;
+            text-shadow: 2px 2px 0px #fff, 4px 4px 0px rgba(0,0,0,0.1);
+            margin: 0;
+        }
+
+        #status-bar {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2f3542;
+            padding: 10px 25px;
+            background-color: #ffeaa7;
+            border: 3px dashed #ff9f43;
+            border-radius: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        #video-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            width: 90%;
+            max-width: 600px; 
+            margin-bottom: 15px; 
+        }
+
+        #video-container {
+            border: 8px solid #ffffff;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background-color: #2d3436;
+            width: 100%;
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); 
+        }
+
+        #result-box {
+            position: absolute;
+            bottom: -25px;
+            background-color: #ffffff;
+            padding: 15px 35px;
+            border-radius: 40px;
+            border: 4px solid #ff4757;
+            font-size: 26px;
+            font-weight: 800;
+            color: #2f3542;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            z-index: 10;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .notice {
+            font-size: 16px;
+            font-weight: 600;
+            color: #57606f;
+            background-color: rgba(255,255,255,0.7);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🏠 메인 화면으로 돌아가는 버튼 (AI_Face 폴더에서 한 칸 밖으로 나감) -->
+    <a href="../class2.html" class="home-btn">🏠 처음으로</a>
+
+    <h1>✨ AI 마법 거울: 내 성격 테스트 ✨</h1>
+    
+    <div id="status-bar">AI 마법사 소환 중... 🧙‍♂️ (잠시만 기다려주세요)</div>
+    
+    <div id="video-wrapper">
+        <div id="video-container">
+            <video id="video" autoplay muted playsinline></video>
+        </div>
+        <div id="result-box">얼굴을 보여주세요! 👀</div>
+    </div>
+
+    <div class="notice">💡 안내: AI는 지금 표정만 보고 정한 거예요! (진짜 성격이 아니랍니다 😉)</div>
+
+    <script>
+        const video = document.getElementById('video');
+        const statusBar = document.getElementById('status-bar');
+        const resultBox = document.getElementById('result-box');
+
+        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+
+        Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+            faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL)
+        ]).then(startVideo)
+          .catch(err => {
+              statusBar.innerText = "❌ AI 소환 실패! 인터넷 연결을 확인해 주세요.";
+              statusBar.style.backgroundColor = "#ff7f50";
+          });
+
+        function startVideo() {
+            statusBar.innerText = "상단의 '카메라 허용'을 꼭 눌러주세요! 📷";
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    statusBar.innerText = "분석 준비 완료! 거울에 표정을 지어보세요 😆";
+                    statusBar.style.backgroundColor = "#55efc4";
+                    statusBar.style.border = "3px dashed #00b894";
+                })
+                .catch(err => {
+                    statusBar.innerHTML = "❌ 카메라 연결 실패! 깃허브에 올려야 켜집니다!";
+                    statusBar.style.backgroundColor = "#ff7675";
+                    resultBox.innerText = "카메라가 필요해요 📷";
+                });
+        }
+
+        video.addEventListener('play', () => {
+            setInterval(async () => {
+                const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
+
+                if (detections && detections.length > 0) {
+                    let largestFace = detections.reduce((prev, current) => {
+                        let prevArea = prev.detection.box.width * prev.detection.box.height;
+                        let currentArea = current.detection.box.width * current.detection.box.height;
+                        return (prevArea > currentArea) ? prev : current;
+                    });
+
+                    const expressions = largestFace.expressions;
+                    let maxExpression = "";
+                    let maxValue = 0;
+                    
+                    for (const [expression, value] of Object.entries(expressions)) {
+                        if (value > maxValue) {
+                            maxValue = value;
+                            maxExpression = expression;
+                        }
+                    }
+
+                    let resultText = "";
+                    let borderColor = "#ff4757";
+
+                    switch (maxExpression) {
+                        case "happy":
+                            resultText = "😁 친화력 100% 해피 바이러스!";
+                            borderColor = "#f1c40f"; 
+                            break;
+                        case "neutral":
+                            resultText = "😐 침착한 두뇌파 명탐정!";
+                            borderColor = "#95a5a6"; 
+                            break;
+                        case "surprised":
+                            resultText = "😲 호기심 만렙 엉뚱 발명가!";
+                            borderColor = "#2ecc71"; 
+                            break;
+                        case "angry":
+                            resultText = "😡 불타오르는 열정의 승부사!";
+                            borderColor = "#e74c3c"; 
+                            break;
+                        case "sad":
+                            resultText = "😭 감수성 뿜뿜 예술가!";
+                            borderColor = "#3498db"; 
+                            break;
+                        case "fearful":
+                            resultText = "😨 조심성 1등 안전제일주의자!";
+                            borderColor = "#9b59b6"; 
+                            break;
+                        case "disgusted":
+                            resultText = "😒 맛잘알 깐깐한 미식가!";
+                            borderColor = "#34495e"; 
+                            break;
+                    }
+
+                    resultBox.innerText = resultText;
+                    resultBox.style.border = `4px solid ${borderColor}`;
+                    resultBox.style.color = borderColor;
+                } else {
+                    resultBox.innerText = "얼굴을 화면 중앙에 보여주세요! 🙈";
+                    resultBox.style.border = "4px solid #ff4757";
+                    resultBox.style.color = "#2f3542";
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>

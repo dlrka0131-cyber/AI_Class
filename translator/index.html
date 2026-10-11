@@ -90,7 +90,8 @@
   .hero {
     display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
     gap: 10px 16px;
-    margin-bottom: 14px;
+    margin-top: -20px;     /* 제목 위로 끌어올리기 */
+    margin-bottom: 34px;   /* 아래 박스들 제자리에 두도록 간격 벌리기 */
   }
   .hero .tag {
     display: inline-flex; align-items: center; gap: 6px;
@@ -448,7 +449,7 @@
 </style>
 </head>
 <body>
-<div style="max-width:1680px;margin:0 auto 14px;text-align:left;"><a href="../class7.html" style="display:inline-block;text-decoration:none;font-family:'Pretendard',sans-serif;background:#fff;color:#212529;font-size:1.05em;font-weight:800;padding:8px 16px;border-radius:14px;border:3px solid #212529;box-shadow:3px 3px 0 #212529;">⬅ 7차시로 돌아가기</a></div>
+<div style="max-width:1680px;margin:0 auto 0px;text-align:left;"><a href="../class7.html" style="display:inline-block;text-decoration:none;font-family:'Pretendard',sans-serif;background:#fff;color:#212529;font-size:1.05em;font-weight:800;padding:8px 16px;border-radius:14px;border:3px solid #212529;box-shadow:3px 3px 0 #212529;">⬅ 7차시로 돌아가기</a></div>
 <div class="page">
 
   <header class="hero">
@@ -641,12 +642,12 @@
   $('fGender').addEventListener('change', e => e.target.classList.toggle('empty', !e.target.value));
 
   // 그림 사이트에 스타일 목록이 이미 있으면 체크하지 않아요 (기본: 넣지 않음)
-  $('useStyle').addEventListener('change', e => { $('fStyle').disabled = !e.target.checked; updatePreview(); });
+  $('useStyle').addEventListener('change', e => {$('fStyle').disabled = !e.target.checked; updatePreview(); });
 
   // 예: "30대 남자 파일럿, 비행기를 조종하고 있는 모습, 배경은 비행기 조종석"
   function parts() {
-    const age = $('fAge').value, gender = $('fGender').value, job = $('fJob').value.trim();
-    const action = $('fAction').value.trim(), place = $('fPlace').value.trim();
+    const age = $('fAge').value, gender = $('fGender').value, job =$('fJob').value.trim();
+    const action = $('fAction').value.trim(), place =$('fPlace').value.trim();
     const style = $('useStyle').checked ? $('fStyle').value : '';
     const who = [age, gender, job].filter(Boolean).join(' ');
     return [who, action, place && `배경은 ${place}`, style].filter(Boolean);
@@ -661,8 +662,7 @@
   }
   ['fAge', 'fGender', 'fJob', 'fAction', 'fPlace', 'fStyle'].forEach(id => {
     $(id).addEventListener('input', updatePreview);
-    $(id).addEventListener('change', updatePreview);
-    $(id).addEventListener('keydown', e => { if (e.key === 'Enter') buildBtn.click(); });
+    $(id).addEventListener('change', updatePreview);$(id).addEventListener('keydown', e => { if (e.key === 'Enter') buildBtn.click(); });
   });
 
   buildBtn.addEventListener('click', () => {
@@ -952,8 +952,7 @@
 
   function updateCount() { $('count').textContent = `${input.value.length} / 2000`; }
 
-  $('copiedOk').addEventListener('click', () => {
-    $('copied').hidden = true;
+  $('copiedOk').addEventListener('click', () => {$('copied').hidden = true;
     resetCopy();
   });
 
@@ -977,8 +976,7 @@
     output.textContent = '번역 결과가 여기에 나와요';
     output.className = 'result placeholder';
     $('detected').textContent = '';
-    $('engine').textContent = '';
-    $('back').classList.remove('show');
+    $('engine').textContent = '';$('back').classList.remove('show');
     resetCopy();
     updateCount();
     input.focus();

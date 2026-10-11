@@ -15,45 +15,52 @@
         h1 { font-family: 'Pretendard', sans-serif; color: #212529; font-size: 3.5em; margin: 0 0 20px 0; font-weight: 900; text-shadow: 4px 4px 0px #ffe066; }
         .main-subtitle { font-family: 'Pretendard', sans-serif; font-size: 1.5em; margin: 0 0 50px 0; font-weight: 700; background-color: #ffffff; display: inline-block; padding: 12px 30px; border-radius: 30px; border: 3px solid #212529; box-shadow: 4px 4px 0px #212529; }
         .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; max-width: 1100px; margin: 0 auto; }
+        
+        /* 카드 공통 스타일 */
         .card { background-color: #ffffff; border-radius: 25px; border: 4px solid #212529; box-shadow: 6px 6px 0px #212529; width: 230px; padding: 30px 20px; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; position: relative; }
         .card:hover { transform: translate(-4px, -4px); box-shadow: 10px 10px 0px #212529; }
+        
+        /* 2번 AI 스노우 카드 포인트 컬러 (보라색) */
+        .card-ai-snow { border-color: #8e44ad; }
+        .card-ai-snow .card-number { background-color: #8e44ad; color: white; border-color: #8e44ad; }
+
         .card-number { position: absolute; top: -15px; left: -15px; background-color: #ffe066; color: #212529; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Pretendard', sans-serif; font-size: 1.5em; font-weight: 900; border: 4px solid #212529; z-index: 2; }
         .icon-box { font-size: 3.5em; margin-top: 15px; margin-bottom: 20px; transition: transform 0.3s ease; }
         .card:hover .icon-box { transform: scale(1.1) rotate(5deg); }
         .card h2 { font-family: 'Pretendard', sans-serif; color: #212529; font-size: 1.3em; margin: 0 0 25px 0; font-weight: 800; text-align: center; line-height: 1.3; }
+        
         .btn { font-family: 'Pretendard', sans-serif; display: inline-block; text-decoration: none; color: #212529; font-size: 1.1em; padding: 12px 0; border-radius: 15px; border: 3px solid #212529; width: 100%; font-weight: 800; margin-top: auto; box-shadow: 3px 3px 0px #212529; transition: all 0.1s ease; background-color: #e9ecef; }
         .btn:hover { background-color: #dee2e6; }
         .btn:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px #212529; }
+        
+        /* 2번 버튼 컬러 */
+        .btn-ai-snow { background-color: #fbc2eb; border-color: #8e44ad; }
+        .btn-ai-snow:hover { background-color: #e5a4d6; }
+        .btn-ai-snow:active { box-shadow: 0px 0px 0px #8e44ad; }
+
     </style>
 </head>
 <body>
     <div class="header-nav"><a href="index.html" class="btn-home">🏠 처음으로</a></div>
     <h1 style="font-family: 'Pretendard', sans-serif;">🚧 3차시: 얼굴 인식</h1>
     <p class="main-subtitle" style="font-family: 'Pretendard', sans-serif;">오늘의 미션을 완수해 볼까요?</p>
+    
     <div class="container">
+        <!-- 1번: 엔트리 만들기 (기존 유지) -->
         <div class="card">
             <div class="card-number" style="font-family: 'Pretendard', sans-serif;">1</div>
             <div class="icon-box">🧩</div>
             <h2 style="font-family: 'Pretendard', sans-serif;">엔트리 만들기</h2>
             <a href="https://playentry.org/ws/new?type=normal&amp;mode=block&amp;lang=ko" target="_blank" class="btn" style="font-family: 'Pretendard', sans-serif;">GO!</a>
         </div>
-        <div class="card">
+
+        <!-- 2번: AI 스노우 필터 (새로 추가) -->
+        <div class="card card-ai-snow">
             <div class="card-number" style="font-family: 'Pretendard', sans-serif;">2</div>
-            <div class="icon-box">👫</div>
-            <h2 style="font-family: 'Pretendard', sans-serif;">인공지능 성별 맞추기</h2>
-            <a href="https://playentry.org/project/67ded06295d2af319481ee90" target="_blank" class="btn" style="font-family: 'Pretendard', sans-serif;">GO!</a>
-        </div>
-        <div class="card">
-            <div class="card-number" style="font-family: 'Pretendard', sans-serif;">3</div>
-            <div class="icon-box">🎂</div>
-            <h2 style="font-family: 'Pretendard', sans-serif;">인공지능 나이 맞추기</h2>
-            <a href="https://playentry.org/project/67dec79bb67e992e8397c804" target="_blank" class="btn" style="font-family: 'Pretendard', sans-serif;">GO!</a>
-        </div>
-        <div class="card">
-            <div class="card-number" style="font-family: 'Pretendard', sans-serif;">4</div>
-            <div class="icon-box">😊</div>
-            <h2 style="font-family: 'Pretendard', sans-serif;">감정 인공지능</h2>
-            <a href="https://playentry.org/project/67debfb816bef8a89d051cd9" target="_blank" class="btn" style="font-family: 'Pretendard', sans-serif;">GO!</a>
+            <div class="icon-box">🐷</div>
+            <h2 style="font-family: 'Pretendard', sans-serif;">AI 마법 사진관<br><span style="font-size:0.7em; color:#7f8c8d;">(스노우 필터)</span></h2>
+            <!-- 경로가 ./AI_Snow/index.html 인지 꼭 확인해 주세요 -->
+            <a href="./AI_Snow/index.html" class="btn btn-ai-snow" style="font-family: 'Pretendard', sans-serif;">체험하기</a>
         </div>
     </div>
 </body>
