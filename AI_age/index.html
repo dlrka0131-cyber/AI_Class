@@ -15,7 +15,6 @@
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             text-align: center;
-            /* 나이 테스트는 약간 오렌지~피치 그라데이션으로 차별화 */
             background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
             margin: 0;
             padding: 15px;
@@ -30,7 +29,6 @@
             position: relative; 
         }
 
-        /* 🏠 처음으로 버튼 스타일 (AI_age 폴더에서 메인으로) */
         .home-btn {
             position: absolute;
             top: 20px;
@@ -103,7 +101,35 @@
             transform: scaleX(-1); 
         }
 
-        /* 결과 말풍선 디자인 */
+        /* 촬영하기 버튼 디자인 추가 */
+        #capture-btn {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 22px;
+            font-weight: 800;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+            transition: all 0.2s ease;
+            font-family: inherit;
+            display: none; /* 카메라 준비 전까지 숨김 */
+            z-index: 20;
+        }
+
+        #capture-btn:hover {
+            background-color: #ff6b81;
+            transform: scale(1.05);
+        }
+
+        #capture-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         #result-box {
             position: absolute;
             bottom: -25px;
@@ -134,7 +160,6 @@
 </head>
 <body>
 
-    <!-- 🏠 메인 화면으로 돌아가는 버튼 -->
     <a href="../class2.html" class="home-btn">🏠 처음으로</a>
 
     <h1>✨ AI 마법 거울: 내 나이 맞추기 ✨</h1>
@@ -148,4 +173,78 @@
         <div id="result-box">얼굴을 보여주세요! 👀</div>
     </div>
 
-    <div class="notice">💡 안내: 빛이나 표정에 따라 나이가
+    <!-- 촬영 버튼 추가 -->
+    <button id="capture-btn">📸 촬영하기</button>
+
+    <div class="notice">💡 안내: 빛이나 표정에 따라 나이가 다르게 나올 수 있어요!</div>
+
+    <!-- AI 로직 자바스크립트 추가 -->
+    <script>
+        const video = document.getElementById('video');
+        const statusBar = document.getElementById('status-bar');
+        const resultBox = document.getElementById('result-box');
+        const captureBtn = document.getElementById('capture-btn');
+
+        // AI 모델이 저장된 주소 (필수)
+        const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+
+        // 1. 카메라 켜기 및 AI 준비
+        async function startApp() {
+            try {
+                // 나이 인식과 얼굴 인식을 위한 AI 모델 불러오기
+                await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+                await faceapi.nets.ageGenderNet.loadFromUri(MODEL_URL);
+                
+                // 웹캠 연결
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                
+                // 카메라가 켜지면 상태 메시지 변경하고 버튼 보이기
+                video.onloadedmetadata = () => {
+                    statusBar.innerText = "✨ AI 마법사 준비 완료! 촬영 버튼을 눌러주세요 ✨";
+                    captureBtn.style.display = "block";
+                };
+            } catch (err) {
+                console.error(err);
+                statusBar.innerText = "카메라를 켤 수 없거나 모델을 불러오지 못했어요. 😢 권한을 확인해주세요.";
+            }
+        }
+
+        // 2. 촬영하기 버튼을 눌렀을 때의 동작
+        captureBtn.addEventListener('click', async () => {
+            // 버튼 여러 번 누르는 것 방지
+            captureBtn.disabled = true;
+            
+            // 3초 카운트다운
+            resultBox.innerText = "분석중... 3초";
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            resultBox.innerText = "분석중... 2초";
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            resultBox.innerText = "분석중... 1초";
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            resultBox.innerText = "분석 완료!";
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // 얼굴 인식 및 나이 분석 실행
+            const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+            
+            if (detection) {
+                // 소수점 나이를 반올림하여 정수로 만들기
+                const age = Math.round(detection.age);
+                resultBox.innerText = `짠! 당신의 AI 예측 나이는 ${age}살! 😲`;
+            } else {
+                resultBox.innerText = "얼굴을 찾을 수 없어요. 다시 시도해 주세요! 😅";
+            }
+            
+            // 버튼 다시 활성화
+            captureBtn.disabled = false;
+        });
+
+        // 웹페이지가 열리면 앱 시작
+        startApp();
+    </script>
+</body>
+</html>
