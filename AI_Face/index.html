@@ -334,6 +334,7 @@
 
         // 3. 다시하기: 결과 숨기고 카메라 다시 보이기
         retryBtn.addEventListener('click', () => {
+            resultPhoto.width = resultPhoto.height = 0; // 찍은 사진 바로 지우기
             resultCard.style.display = "none";
             retryBtn.style.display = "none";
             videoWrapper.style.display = "flex";
