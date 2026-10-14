@@ -101,50 +101,9 @@
             transform: scaleX(-1); 
         }
 
-        /* 촬영하기 버튼 디자인 추가 */
-        #capture-btn {
-            background-color: #ff4757;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 22px;
-            font-weight: 800;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
-            transition: all 0.2s ease;
-            font-family: inherit;
-            display: none; /* 카메라 준비 전까지 숨김 */
-            z-index: 20;
-        }
 
-        #capture-btn:hover {
-            background-color: #ff6b81;
-            transform: scale(1.05);
-        }
 
-        #capture-btn:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
 
-        #result-box {
-            position: absolute;
-            bottom: -25px;
-            background-color: #ffffff;
-            padding: 15px 35px;
-            border-radius: 40px;
-            border: 5px solid #ff6b81;
-            font-size: 26px;
-            font-weight: 800;
-            color: #ff4757;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-            white-space: nowrap;
-            z-index: 10;
-            transition: all 0.2s ease-in-out;
-        }
 
         .notice {
             font-size: 16px;
@@ -156,6 +115,89 @@
             margin: 0;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        /* 3,2,1 카운트다운 (카메라 위 가운데) */
+        #countdown {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 160px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 6px 20px rgba(0,0,0,0.45);
+            z-index: 20;
+            pointer-events: none;
+        }
+        #countdown.pop { animation: pop 0.9s ease-out; }
+        @keyframes pop {
+            0%   { transform: scale(1.6); opacity: 0; }
+            30%  { transform: scale(1);   opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        /* 찰칵! 하얀 번쩍임 */
+        #flash {
+            position: absolute;
+            inset: 0;
+            background: #ffffff;
+            opacity: 0;
+            border-radius: 25px;
+            z-index: 30;
+            pointer-events: none;
+        }
+        #flash.on { animation: flash 0.4s ease-out; }
+        @keyframes flash { from { opacity: 1; } to { opacity: 0; } }
+
+        /* 가운데에 뜨는 결과 카드 */
+        #result-card {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            background-color: #ffffff;
+            border: 6px solid #ff4757;
+            border-radius: 30px;
+            padding: 25px 35px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+            max-width: 90%;
+            animation: card-in 0.4s ease-out;
+        }
+        @keyframes card-in {
+            from { transform: scale(0.8); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
+        }
+        #result-photo {
+            max-height: 38vh;
+            max-width: 100%;
+            border-radius: 18px;
+        }
+        #result-text {
+            font-size: 34px;
+            font-weight: 800;
+            color: #ff4757;
+            line-height: 1.3;
+        }
+
+        /* 촬영하기 / 다시하기 버튼 */
+        .action-btn {
+            display: none;
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 22px;
+            font-weight: 800;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .action-btn:hover { transform: scale(1.05); }
+        .action-btn:disabled { background-color: #a4b0be; box-shadow: none; cursor: default; transform: none; }
+        #retry-btn { background-color: #2ed573; box-shadow: 0 5px 15px rgba(46, 213, 115, 0.4); }
     </style>
 </head>
 <body>
@@ -170,80 +212,122 @@
         <div id="video-container">
             <video id="video" autoplay muted playsinline></video>
         </div>
-        <div id="result-box">얼굴을 보여주세요! 👀</div>
+        <div id="countdown"></div>
+        <div id="flash"></div>
     </div>
 
-    <!-- 촬영 버튼 추가 -->
-    <button id="capture-btn">📸 촬영하기</button>
+    <!-- 결과 카드 (촬영 후 가운데에 뜸) -->
+    <div id="result-card">
+        <canvas id="result-photo"></canvas>
+        <div id="result-text"></div>
+    </div>
+
+    <button id="capture-btn" class="action-btn">📸 촬영하기</button>
+    <button id="retry-btn" class="action-btn">🔄 다시하기</button>
 
     <div class="notice">💡 안내: 빛이나 표정에 따라 나이가 다르게 나올 수 있어요!</div>
 
-    <!-- AI 로직 자바스크립트 추가 -->
     <script>
+        const MODELS = [faceapi.nets.tinyFaceDetector, faceapi.nets.ageGenderNet];
+        const READY_TEXT = "✨ AI 마법사 준비 완료! 촬영 버튼을 눌러주세요 ✨";
+
+        async function analyze(photo) {
+            const detection = await faceapi.detectSingleFace(photo, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
+            if (!detection) {
+                return { text: "얼굴을 찾을 수 없어요. 다시 해 볼까요? 😅", color: "#57606f" };
+            }
+            const age = Math.round(detection.age);
+            return { text: `짠! AI가 본 나이는 ${age}살! 😲`, color: "#ff4757" };
+        }
+
         const video = document.getElementById('video');
         const statusBar = document.getElementById('status-bar');
-        const resultBox = document.getElementById('result-box');
+        const videoWrapper = document.getElementById('video-wrapper');
+        const countdown = document.getElementById('countdown');
+        const flash = document.getElementById('flash');
+        const resultCard = document.getElementById('result-card');
+        const resultPhoto = document.getElementById('result-photo');
+        const resultText = document.getElementById('result-text');
         const captureBtn = document.getElementById('capture-btn');
+        const retryBtn = document.getElementById('retry-btn');
 
-        // AI 모델이 저장된 주소 (필수)
         const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-        // 1. 카메라 켜기 및 AI 준비
+        // 1. AI 모델 불러오고 카메라 켜기
         async function startApp() {
             try {
-                // 나이 인식과 얼굴 인식을 위한 AI 모델 불러오기
-                await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-                await faceapi.nets.ageGenderNet.loadFromUri(MODEL_URL);
-                
-                // 웹캠 연결
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = stream;
-                
-                // 카메라가 켜지면 상태 메시지 변경하고 버튼 보이기
+                await Promise.all(MODELS.map(net => net.loadFromUri(MODEL_URL)));
+                await analyze(document.createElement('canvas')); // 첫 분석이 느리지 않게 미리 한 번 실행
+            } catch (err) {
+                console.error(err);
+                statusBar.innerText = "❌ AI 소환 실패! 인터넷 연결을 확인해 주세요.";
+                return;
+            }
+            try {
+                statusBar.innerText = "상단의 '카메라 허용'을 꼭 눌러주세요! 📷";
+                video.srcObject = await navigator.mediaDevices.getUserMedia({ video: true });
                 video.onloadedmetadata = () => {
-                    statusBar.innerText = "✨ AI 마법사 준비 완료! 촬영 버튼을 눌러주세요 ✨";
-                    captureBtn.style.display = "block";
+                    statusBar.innerText = READY_TEXT;
+                    captureBtn.style.display = "inline-block";
                 };
             } catch (err) {
                 console.error(err);
-                statusBar.innerText = "카메라를 켤 수 없거나 모델을 불러오지 못했어요. 😢 권한을 확인해주세요.";
+                statusBar.innerText = "❌ 카메라를 켤 수 없어요. 카메라 권한을 확인해 주세요 📷";
             }
         }
 
-        // 2. 촬영하기 버튼을 눌렀을 때의 동작
+        // 2. 촬영하기: 3, 2, 1 → 찰칵! → 결과
         captureBtn.addEventListener('click', async () => {
-            // 버튼 여러 번 누르는 것 방지
             captureBtn.disabled = true;
-            
-            // 3초 카운트다운
-            resultBox.innerText = "분석중... 3초";
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            resultBox.innerText = "분석중... 2초";
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            resultBox.innerText = "분석중... 1초";
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            resultBox.innerText = "분석 완료!";
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // 얼굴 인식 및 나이 분석 실행
-            const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
-            
-            if (detection) {
-                // 소수점 나이를 반올림하여 정수로 만들기
-                const age = Math.round(detection.age);
-                resultBox.innerText = `짠! 당신의 AI 예측 나이는 ${age}살! 😲`;
-            } else {
-                resultBox.innerText = "얼굴을 찾을 수 없어요. 다시 시도해 주세요! 😅";
+            countdown.style.display = "flex";
+            for (const n of [3, 2, 1]) {
+                countdown.innerText = n;
+                countdown.classList.remove('pop');
+                void countdown.offsetWidth; // 애니메이션 다시 시작
+                countdown.classList.add('pop');
+                await sleep(1000);
             }
-            
-            // 버튼 다시 활성화
+            countdown.style.display = "none";
+
+            // 찰칵! (거울처럼 좌우 반전해서 사진 저장)
+            flash.classList.remove('on');
+            void flash.offsetWidth;
+            flash.classList.add('on');
+            resultPhoto.width = video.videoWidth;
+            resultPhoto.height = video.videoHeight;
+            const ctx = resultPhoto.getContext('2d');
+            ctx.save();
+            ctx.translate(resultPhoto.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0);
+            ctx.restore();
+
+            statusBar.innerText = "🔮 AI가 사진을 분석하고 있어요...";
+            const result = await analyze(resultPhoto);
+            await sleep(400);
+
+            // 카메라는 잠시 숨기고 결과 카드 보여주기
+            resultText.innerText = result.text;
+            resultText.style.color = result.color;
+            resultCard.style.borderColor = result.color;
+            videoWrapper.style.display = "none";
+            captureBtn.style.display = "none";
+            resultCard.style.display = "flex";
+            retryBtn.style.display = "inline-block";
+            statusBar.innerText = "✨ 결과가 나왔어요! ✨";
             captureBtn.disabled = false;
         });
 
-        // 웹페이지가 열리면 앱 시작
+        // 3. 다시하기: 결과 숨기고 카메라 다시 보이기
+        retryBtn.addEventListener('click', () => {
+            resultCard.style.display = "none";
+            retryBtn.style.display = "none";
+            videoWrapper.style.display = "flex";
+            captureBtn.style.display = "inline-block";
+            statusBar.innerText = READY_TEXT;
+        });
+
         startApp();
     </script>
 </body>
