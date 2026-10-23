@@ -98,7 +98,10 @@
         /* 필터 선택 버튼들 */
         .filter-container {
             display: flex;
-            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 760px;
+            gap: 12px;
             margin-top: 10px;
             z-index: 10;
         }
@@ -107,8 +110,8 @@
             background-color: #ffffff;
             border: 4px solid #8e44ad;
             border-radius: 20px;
-            padding: 10px 20px;
-            font-size: 24px;
+            padding: 8px 16px;
+            font-size: 20px;
             cursor: pointer;
             box-shadow: 0 5px 10px rgba(0,0,0,0.15);
             transition: all 0.2s;
@@ -151,6 +154,11 @@
         <button class="filter-btn" onclick="changeFilter('pig', this)">🐽 돼지코</button>
         <button class="filter-btn" onclick="changeFilter('sunglasses', this)">🕶️ 선글라스</button>
         <button class="filter-btn" onclick="changeFilter('crown', this)">👑 왕관</button>
+        <button class="filter-btn" onclick="changeFilter('cat', this)">🐱 고양이</button>
+        <button class="filter-btn" onclick="changeFilter('bunny', this)">🐰 토끼 귀</button>
+        <button class="filter-btn" onclick="changeFilter('blush', this)">😊 볼터치</button>
+        <button class="filter-btn" onclick="changeFilter('hearteyes', this)">😍 하트 눈</button>
+        <button class="filter-btn" onclick="changeFilter('flowers', this)">🌸 꽃 머리띠</button>
     </div>
 
     <script>
@@ -194,6 +202,24 @@
             // 모든 버튼에서 active 클래스 제거 후, 누른 버튼에만 추가
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
+        }
+
+        // 점 여러 개의 가운데 좌표 구하기
+        function centerOf(points) {
+            const x = points.reduce((sum, p) => sum + p.x, 0) / points.length;
+            const y = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+            return { x, y };
+        }
+
+        // (x, y)를 아래 가운데로 하는 세모 그리기 (고양이 귀)
+        function drawTriangle(x, y, width, height, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(x - width / 2, y);
+            ctx.lineTo(x + width / 2, y);
+            ctx.lineTo(x, y - height);
+            ctx.closePath();
+            ctx.fill();
         }
 
         video.addEventListener('play', () => {
@@ -247,6 +273,81 @@
                             const foreheadY = leftEye[0].y - (faceWidth * 0.5);
                             ctx.font = `${faceWidth * 0.8}px Arial`;
                             ctx.fillText('👑', foreheadX, foreheadY);
+                        }
+                        else if (currentFilter === 'hearteyes') {
+                            // 하트 눈: 양쪽 눈의 가운데 좌표에 하트 그리기
+                            ctx.font = `${faceWidth * 0.3}px Arial`;
+                            [leftEye, rightEye].forEach(eye => {
+                                const c = centerOf(eye);
+                                ctx.fillText('❤️', c.x, c.y);
+                            });
+                        }
+                        else if (currentFilter === 'blush') {
+                            // 볼터치: 턱선과 코 사이(볼) 좌표에 분홍 동그라미
+                            const noseTip = nose[3];
+                            [jaw[2], jaw[14]].forEach(j => {
+                                const cx = j.x + (noseTip.x - j.x) * 0.35;
+                                ctx.fillStyle = 'rgba(255, 105, 150, 0.6)';
+                                ctx.beginPath();
+                                ctx.ellipse(cx, noseTip.y + faceWidth * 0.05, faceWidth * 0.12, faceWidth * 0.07, 0, 0, Math.PI * 2);
+                                ctx.fill();
+                            });
+                        }
+                        else {
+                            // 머리 위에 붙는 필터들: 고개를 기울이면 같이 기울어지도록
+                            // 두 눈 사이를 기준점으로 잡고 캔버스를 돌려서 그립니다.
+                            const eyeL = centerOf(leftEye);
+                            const eyeR = centerOf(rightEye);
+                            const angle = Math.atan2(eyeR.y - eyeL.y, eyeR.x - eyeL.x);
+                            const w = faceWidth;
+
+                            ctx.save();
+                            ctx.translate((eyeL.x + eyeR.x) / 2, (eyeL.y + eyeR.y) / 2);
+                            ctx.rotate(angle);
+
+                            if (currentFilter === 'cat') {
+                                // 고양이 귀 (세모 두 개)
+                                [-1, 1].forEach(side => {
+                                    drawTriangle(side * w * 0.32, -w * 0.55, w * 0.32, w * 0.4, '#555555');
+                                    drawTriangle(side * w * 0.32, -w * 0.58, w * 0.18, w * 0.26, '#ff9fc4');
+                                });
+                                // 고양이 수염 (코 아래 양옆으로 세 줄씩)
+                                const noseY = nose[6].y - (eyeL.y + eyeR.y) / 2;
+                                ctx.strokeStyle = '#333333';
+                                ctx.lineWidth = Math.max(2, w * 0.012);
+                                [-1, 1].forEach(side => {
+                                    [-0.06, 0, 0.06].forEach(dy => {
+                                        ctx.beginPath();
+                                        ctx.moveTo(side * w * 0.12, noseY);
+                                        ctx.lineTo(side * w * 0.45, noseY + dy * w * 1.5);
+                                        ctx.stroke();
+                                    });
+                                });
+                            }
+                            else if (currentFilter === 'bunny') {
+                                // 토끼 귀 (길쭉한 타원 두 개)
+                                [-1, 1].forEach(side => {
+                                    const x = side * w * 0.2;
+                                    ctx.fillStyle = '#ffffff';
+                                    ctx.beginPath();
+                                    ctx.ellipse(x, -w * 0.95, w * 0.12, w * 0.38, side * 0.15, 0, Math.PI * 2);
+                                    ctx.fill();
+                                    ctx.fillStyle = '#ffb6d0';
+                                    ctx.beginPath();
+                                    ctx.ellipse(x, -w * 0.93, w * 0.06, w * 0.28, side * 0.15, 0, Math.PI * 2);
+                                    ctx.fill();
+                                });
+                            }
+                            else if (currentFilter === 'flowers') {
+                                // 꽃 머리띠: 이마 위에 꽃을 둥글게 늘어놓기
+                                const flowers = ['🌸', '🌼', '🌷', '🌼', '🌸'];
+                                ctx.font = `${w * 0.22}px Arial`;
+                                flowers.forEach((f, i) => {
+                                    const t = (i - 2) / 2; // -1 ~ 1
+                                    ctx.fillText(f, t * w * 0.42, -w * 0.55 + t * t * w * 0.12);
+                                });
+                            }
+                            ctx.restore();
                         }
                     });
                 }
