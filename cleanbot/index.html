@@ -76,7 +76,7 @@
   }
 
   /* ── 단계 버튼 ── */
-  .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 22px; }
+  .steps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 22px; }
   .steps button {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     padding: 13px 10px; border-radius: 16px;
@@ -86,7 +86,8 @@
   .steps button:nth-child(2) { background: var(--mint); }
   .steps button:nth-child(3) { background: var(--teal); }
   .steps button:nth-child(4) { background: #a8d5f7; }
-  .steps button:nth-child(5) { background: var(--yellow-soft); }
+  .steps button:nth-child(5) { background: #e2d6ff; }
+  .steps button:nth-child(6) { background: var(--yellow-soft); }
   .steps button .n {
     width: 26px; height: 26px; border-radius: 50%;
     display: grid; place-items: center;
@@ -369,6 +370,57 @@
   .qtabs button { padding: 10px 16px; border-radius: 14px; background: #fff; font-size: 1rem; font-weight: 900; }
   .qtabs button.on { background: var(--yellow); transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
 
+  /* ── 상황 속으로 (상황극) ── */
+  .scenes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .scene-card {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    padding: 20px 18px 18px; border-radius: 22px; text-align: left; background: #fff;
+  }
+  .scene-card:nth-child(6n+1) { background: var(--teal-soft); }
+  .scene-card:nth-child(6n+2) { background: var(--coral-soft); }
+  .scene-card:nth-child(6n+3) { background: var(--mint); }
+  .scene-card:nth-child(6n+4) { background: var(--yellow-soft); }
+  .scene-card:nth-child(6n+5) { background: #e2d6ff; }
+  .scene-card:nth-child(6n+6) { background: #d6e9fb; }
+  .scene-card .se { font-size: 2.4rem; line-height: 1; }
+  .scene-card b { font-size: 1.25rem; font-weight: 900; }
+  .scene-card .sw { font-size: .95rem; font-weight: 800; color: var(--ink-soft); }
+  .scene-card .sm { font-size: .95rem; font-weight: 700; color: var(--ink-soft); line-height: 1.5; }
+  .scene-card .tag2 { font-size: .8rem; font-weight: 900; padding: 3px 10px; border-radius: 999px; background: #fff; border: 2px solid var(--ink); }
+  .scene-how { margin: 0 0 18px; padding: 14px 18px; border-radius: 18px; background: var(--yellow-soft); border: 2px dashed var(--ink); font-weight: 700; line-height: 1.7; }
+
+  .scene-top {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 14px 18px; margin-bottom: 14px;
+    border-radius: 20px; border: var(--line); box-shadow: var(--sh); background: #f1eaff;
+  }
+  .scene-top .st-main { flex: 1; min-width: 220px; }
+  .scene-top .st-sit { margin: 0; font-size: 1.05rem; font-weight: 700; line-height: 1.5; color: var(--ink-soft); }
+  .scene-top .st-mission { margin: 6px 0 0; font-size: 1.15rem; font-weight: 900; }
+  .mood { flex: none; text-align: center; padding: 8px 14px; border-radius: 16px; background: #fff; border: 2px solid var(--ink); }
+  .mood small { display: block; font-size: .82rem; font-weight: 900; color: var(--muted); }
+  .mood .hearts { font-size: 1.5rem; letter-spacing: 2px; white-space: nowrap; }
+  .mood.up { animation: levelup .6s ease-out; }
+  .mood.down { animation: shake .4s; }
+  .mood .delta { display: block; min-height: 1.3em; font-size: .9rem; font-weight: 900; }
+  .mood .delta.plus { color: var(--good-ink); }
+  .mood .delta.minus { color: var(--bad-ink); }
+  .ava.narr { background: #e2d6ff; }
+  .bubble.narr { background: #f1eaff; border-style: dashed; font-size: 1.1rem; }
+  .say .tip-btn { padding: 0 18px; color: var(--ink); border-radius: 18px; background: var(--yellow); font-size: 1.05rem; font-weight: 900; white-space: nowrap; }
+  .say .tip-btn:disabled { opacity: .45; box-shadow: none; }
+
+  .ending { text-align: center; padding: 22px 18px; border-radius: 24px; border: var(--line); box-shadow: var(--sh); }
+  .ending.good { background: var(--mint); }
+  .ending.mid { background: var(--yellow-soft); }
+  .ending.bad { background: var(--coral-soft); }
+  .ending .ee { font-size: 4rem; line-height: 1.1; }
+  .ending h3 { margin: 8px 0 6px; font-size: 1.6rem; font-weight: 900; }
+  .ending p { margin: 0 auto; max-width: 720px; font-size: 1.15rem; font-weight: 700; line-height: 1.6; color: var(--ink-soft); }
+  .ending .hearts { margin-top: 10px; font-size: 1.8rem; letter-spacing: 3px; }
+  #sceneEnd .stats { margin-top: 20px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  [hidden] { display: none !important; }
+
   /* ── 안내 창 ── */
   .modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 16px; background: rgba(38,48,66,.45); }
   .modal[hidden] { display: none; }
@@ -404,9 +456,12 @@
   @media (max-width: 1000px) {
     .hint-qs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
+  @media (max-width: 1300px) {
+    .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
   @media (max-width: 900px) {
     .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .steps button:last-child { grid-column: 1 / -1; }
+    .scenes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 760px) {
     html { font-size: 16px; }
@@ -417,6 +472,8 @@
     .grow-top { justify-content: center; }
     .grow-ava { width: 80px; height: 80px; font-size: 3rem; }
     .pick, .cmp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .scenes { grid-template-columns: minmax(0, 1fr); }
+    .say .tip-btn { padding: 0 12px; }
     .card-head, .card-body { padding-left: 16px; padding-right: 16px; }
     .row { max-width: 94%; }
     .log-row { grid-template-columns: 1fr; gap: 4px; }
@@ -445,6 +502,7 @@
   <button class="pressable" data-go="train"><span class="n">2</span>학습시키기</button>
   <button class="pressable" data-go="chat"><span class="n">3</span>대화하기</button>
   <button class="pressable" data-go="result"><span class="n">4</span>결과 보기</button>
+  <button class="pressable" data-go="scene"><span class="n">🎭</span>상황 속으로</button>
   <button class="pressable lock" data-go="questions" id="qTab"><span class="n">🔒</span>질문 만들기</button>
 </nav>
 
@@ -608,7 +666,72 @@
       <button class="ghost pressable" id="again">🔁 같은 상대와 다시 대화하기</button>
       <button class="ghost pressable" id="otherPartner">👥 다른 상대와 대화하기</button>
       <button class="ghost pressable" id="moreWords">📝 단어 더 가르치기</button>
+      <button class="ghost pressable" id="toScene">🎭 상황 속으로 들어가기</button>
       <button class="big-btn pressable" id="toQuestions">✏️ 질문 직접 만들기</button>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- 상황 속으로 -->
+<section class="panel" id="p-scene">
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <span class="eyebrow">Role Play · In the Scene</span>
+        <h2 id="sceneTitle">🎭 상황 속으로</h2>
+        <p id="sceneSub"></p>
+      </div>
+      <span class="sp"></span>
+      <span class="progress" id="sceneProgress" hidden></span>
+      <button class="ghost pressable switch" id="sceneSwitch" hidden>🎭 상황 바꾸기</button>
+    </div>
+    <div class="card-body">
+    <div id="scenePick">
+      <p class="scene-how">🎬 상황을 고르면 내가 <b>이야기 속 주인공</b>이 돼요. 내 말에 따라 상대의 <b>반응과 마음 온도 💗</b>가 달라지고, <b>결말</b>도 달라져요. 클린봇이 배운 단어로 내 말을 판단하니까, 모르는 말이 나오면 그 자리에서 가르쳐 주세요!</p>
+      <div class="scenes" id="scenes"></div>
+    </div>
+    <div id="sceneTalk" hidden>
+      <div class="scene-top">
+        <div class="st-main">
+          <p class="st-sit" id="sceneSit"></p>
+          <p class="st-mission" id="sceneMission"></p>
+        </div>
+        <div class="mood" id="mood">
+          <small id="moodLabel">마음 온도</small>
+          <span class="hearts" id="hearts"></span>
+          <span class="delta" id="moodDelta"></span>
+        </div>
+      </div>
+      <div class="chat" id="sceneChat" aria-live="polite"></div>
+      <form class="say" id="sceneSay">
+        <button type="button" class="tip-btn pressable" id="tipBtn">💡 힌트</button>
+        <input type="text" id="sceneAnswer" maxlength="60" placeholder="내가 할 말을 써 보세요" autocomplete="off" aria-label="내가 할 말">
+        <button type="submit" id="sceneSend" class="pressable">말하기</button>
+      </form>
+    </div>
+    <div id="sceneEnd" hidden>
+      <div class="ending" id="ending"></div>
+      <div class="stats">
+        <div class="stat s1"><b id="eOk">0</b><span>😊 착한 말</span></div>
+        <div class="stat s2"><b id="eNo">0</b><span>🚨 나쁜 말</span></div>
+        <div class="stat s4"><b id="eFix">0</b><span>🌱 고쳐 말하기 성공</span></div>
+      </div>
+      <div class="log" id="sceneLog"></div>
+      <div class="think-box">
+        <h3>🤔 생각해 보기</h3>
+        <ul>
+          <li>내가 한 말에 따라 상대의 <b>반응과 마음 온도</b>는 어떻게 달라졌나요?</li>
+          <li>클린봇이 나쁜 말을 지웠는데도 마음 온도가 내려갔어요. <b>지운 말은 정말 없던 말</b>이 될까요?</li>
+          <li>클린봇이 <b>잘못 판단해서</b> 이야기가 엉뚱하게 흘러간 적이 있었나요? 왜 그랬을까요?</li>
+          <li>같은 상황에서 <b>다른 결말</b>을 만들려면 어떤 말을 하면 좋을까요?</li>
+        </ul>
+      </div>
+      <div class="actions">
+        <button class="ghost pressable" id="sceneAgain">🔁 이 상황 다시 도전하기</button>
+        <button class="ghost pressable" id="sceneOther">🎭 다른 상황 고르기</button>
+        <button class="ghost pressable" id="sceneWords">📝 단어 더 가르치기</button>
+      </div>
     </div>
     </div>
   </div>
@@ -720,6 +843,140 @@
     },
   };
   const ORDER = ['bot', 'mom', 'teacher', 'friend'];
+
+  /* ───────── 상황 속으로: 상황극 대본 ─────────
+     say: 상대가 먼저 하는 말 / cue: 내가 먼저 말해야 할 때의 안내
+     ok·no: 내 말이 착한 말·나쁜 말로 판단됐을 때 상대의 반응 */
+  const SCENES = [
+    {
+      id: 'book', emoji: '📚', title: '빌린 책을 잃어버렸어요', who: { name: '지호', emoji: '🧒' },
+      sit: '친구 지호에게 빌린 만화책을 잃어버렸어요. 지호는 아직 그 사실을 몰라요.',
+      mission: '솔직하게 말하고 진심으로 사과하기',
+      fix: '…그렇게 다시 말해 주니까 화가 좀 풀린다.', unk: '응…? 무슨 말인지 잘 모르겠어.',
+      stages: [
+        { cue: '저기 지호가 걸어오고 있어요. 책을 잃어버린 일을 내가 먼저 말해 보세요!', tip: '사실대로 말하고 사과하는 말을 넣어 보세요.',
+          ok: '어…? 깜짝 놀랐지만, 그렇게 말해 주니까 화는 안 난다.', no: '뭐? 지금 그걸 말이라고 해?' },
+        { say: '그 책, 할머니가 생일 선물로 사 주신 거란 말이야…', tip: '지호의 속상한 마음을 알아주는 말을 해 보세요.',
+          ok: '내 마음을 알아주니까 고마워.', no: '너는 내 마음을 하나도 모르는구나.' },
+        { say: '그럼 이제 어떻게 할 거야?', tip: '어떻게 책임질지 약속하는 말을 해 보세요.',
+          ok: '알겠어. 그 말 믿어 볼게.', no: '됐어. 너랑은 말이 안 통해.' },
+        { say: '다음에도 나한테 책 빌릴 거야?', tip: '앞으로 어떻게 할지, 고마운 마음과 함께 말해 보세요.',
+          ok: '좋아! 다음엔 꼭 조심해 줘.', no: '…다시는 안 빌려줄 거야.' },
+      ],
+      end: {
+        good: ['🤝', '더 단단해진 우정', '솔직한 사과 덕분에 지호의 마음이 풀렸어요. 둘은 책을 같이 찾아보기로 했어요.'],
+        mid: ['😐', '어색한 화해', '지호는 알겠다고 했지만 아직 서운한 마음이 남아 있어요. 어떤 말이 더 필요했을까요?'],
+        bad: ['💔', '토라진 지호', '지호는 화가 나서 가 버렸어요. 잘못보다 그다음에 한 말이 더 아팠나 봐요.'],
+      },
+    },
+    {
+      id: 'game', emoji: '🎮', title: '게임 그만하라는 엄마', who: { name: '엄마', emoji: '👩' },
+      sit: '한창 재미있게 게임을 하고 있는데 엄마가 방문을 열고 들어오셨어요.',
+      mission: '짜증 내지 않고 내 마음 전하기',
+      fix: '그래, 그렇게 말하니까 엄마도 듣기 좋네.', unk: '응? 그게 무슨 말이니?',
+      stages: [
+        { say: '게임 벌써 한 시간째야. 이제 그만하고 숙제해야지!', tip: "짜증 대신 '알겠어요' 같은 대답으로 시작해 보세요.",
+          ok: '어머, 웬일로 대답이 이렇게 예쁠까?', no: '뭐라고? 엄마한테 그게 무슨 말버릇이야!' },
+        { say: '그런데 숙제는 얼마나 남았니?', tip: '솔직하게 말하고, 언제 할지 약속해 보세요.',
+          ok: '그래, 약속 꼭 지키는 거다?', no: '하… 엄마 정말 속상하다.' },
+        { say: '엄마는 네가 게임만 할까 봐 걱정돼서 그러는 거야.', tip: '걱정해 주는 엄마의 마음에 대답해 보세요.',
+          ok: '그렇게 말해 주니 엄마가 다 고맙네.', no: '엄마 마음도 좀 알아주면 좋겠다…' },
+        { say: '숙제 다 하면 게임 30분 더 해도 좋아. 어때?', tip: '고마운 마음을 표현해 보세요.',
+          ok: '좋아, 그럼 얼른 시작하자!', no: '…그럼 오늘 게임은 여기까지야.' },
+      ],
+      end: {
+        good: ['🥰', '웃으며 끝난 저녁', '엄마는 기분 좋게 방을 나가셨고, 숙제를 끝낸 뒤 게임도 더 할 수 있게 됐어요.'],
+        mid: ['😐', '조용해진 집', '큰 싸움은 없었지만 엄마도 나도 마음이 개운하지 않아요. 어떤 말이 더 필요했을까요?'],
+        bad: ['😢', '게임기 압수', '엄마는 많이 속상해하셨고 게임기는 당분간 못 쓰게 됐어요. 같은 마음을 다른 말로 전할 수는 없었을까요?'],
+      },
+    },
+    {
+      id: 'dodge', emoji: '🏐', title: '친구 때문에 시합에서 졌어요', who: { name: '서윤', emoji: '👧' },
+      sit: '피구 시합에서 서윤이가 공을 놓쳐서 우리 팀이 졌어요. 서윤이가 혼자 고개를 숙이고 있어요.',
+      mission: '실수한 친구를 위로하고 응원하기',
+      fix: '…다시 그렇게 말해 주니까 조금 괜찮아졌어.', unk: '응…? 무슨 뜻이야?',
+      stages: [
+        { cue: '서윤이는 아무 말도 못 하고 있어요. 내가 먼저 다가가서 말을 걸어 보세요!', tip: '위로하는 말로 시작해 보세요.',
+          ok: '…고마워. 다들 나한테 화난 줄 알았어.', no: '…역시 다 내 탓이지. 미안해.' },
+        { say: '나 때문에 진 거잖아. 나 진짜 못하지?', tip: '친구가 잘한 점을 찾아 칭찬해 보세요.',
+          ok: '그렇게 말해 주니까 눈물이 날 것 같아.', no: '…알아. 나도 내가 싫어.' },
+        { say: '다음 시합에는 나 빼고 하는 게 낫지 않을까?', tip: '함께하고 싶은 마음을 전해 보세요.',
+          ok: '정말? 나도 같이 해도 돼?', no: '…그래, 나는 빠질게.' },
+        { say: '나 연습 더 하고 싶은데… 같이 해 줄 수 있어?', tip: '응원하는 말로 대답해 보세요.',
+          ok: '와, 신난다! 우리 내일부터 하자!', no: '…아니야, 혼자 할게.' },
+      ],
+      end: {
+        good: ['🌈', '다시 웃은 서윤이', '서윤이는 힘을 얻어 다시 웃었어요. 다음 시합에서 둘은 최고의 짝이 될 거예요.'],
+        mid: ['😐', '아직 풀 죽은 서윤이', '서윤이는 괜찮다고 했지만 어깨가 아직 처져 있어요. 어떤 말이 더 필요했을까요?'],
+        bad: ['😭', '혼자 남은 서윤이', '서윤이는 피구를 그만두겠다고 했어요. 진 것보다 친구의 말이 더 아팠나 봐요.'],
+      },
+    },
+    {
+      id: 'new', emoji: '🎒', title: '전학 온 친구가 혼자 있어요', who: { name: '도윤', emoji: '🧑' },
+      sit: '오늘 전학 온 도윤이가 쉬는 시간에 혼자 자리에 앉아 있어요.',
+      mission: '새 친구에게 먼저 다가가 친해지기',
+      fix: '아, 그런 뜻이었구나. 다행이다.', unk: '응…? 미안, 잘 못 알아들었어.',
+      stages: [
+        { cue: '도윤이는 창밖만 보고 있어요. 내가 먼저 인사를 건네 보세요!', tip: '반갑게 인사하고 환영하는 말을 해 보세요.',
+          ok: '아, 안녕! 말 걸어 줘서 고마워.', no: '어… 미안. 내가 뭐 잘못했어?' },
+        { say: '나 아직 이 학교가 낯설어서 좀 무서워.', tip: '안심시켜 주는 말을 해 보세요.',
+          ok: '네 말 들으니까 마음이 편해졌어.', no: '…역시 여기는 나랑 안 맞나 봐.' },
+        { say: '점심시간에 다들 뭐 하고 놀아? 나는 낄 데가 없어서…', tip: '함께하자고 말해 보세요.',
+          ok: '진짜? 나도 같이 놀아도 돼?', no: '…괜찮아. 혼자 있을게.' },
+        { say: '나 사실 그림 그리는 걸 좋아하는데, 이상하지?', tip: '친구가 좋아하는 것을 칭찬해 보세요.',
+          ok: '헤헤, 다음에 내 그림 보여 줄게!', no: '…괜히 말했다.' },
+      ],
+      end: {
+        good: ['🎉', '첫 번째 친구', '도윤이에게 이 학교의 첫 친구가 생겼어요. 내가 건넨 말 한마디가 도윤이의 하루를 바꿨어요.'],
+        mid: ['😐', '아직은 어색한 사이', '인사는 나눴지만 도윤이는 아직 조심스러워해요. 어떤 말이 더 필요했을까요?'],
+        bad: ['😞', '더 움츠러든 도윤이', '도윤이는 다시 창밖만 보고 있어요. 낯선 곳에서 들은 말이라 더 크게 느껴졌나 봐요.'],
+      },
+    },
+    {
+      id: 'lego', emoji: '🧱', title: '동생이 내 레고를 부쉈어요', who: { name: '동생', emoji: '👶' },
+      sit: '일주일 동안 만든 레고 성을 동생이 만지다가 부숴 버렸어요. 나는 지금 무척 화가 나요.',
+      mission: '화가 나도 나쁜 말 없이 내 마음 말하기',
+      fix: '…다시 말해 줘서 고마워. 진짜 미안해.', unk: '응…? 무슨 말이야?',
+      stages: [
+        { say: '미안… 내가 만지다가 레고 성을 부숴 버렸어…', tip: "화가 나도 나쁜 말 대신 '속상해'처럼 내 마음을 말해 보세요.",
+          ok: '화낼 줄 알았는데… 진짜 미안해.', no: '으앙… 일부러 그런 거 아닌데…' },
+        { say: '같이 놀고 싶어서 살짝 만져 본 거야…', tip: '다음부터 어떻게 하면 좋을지 부드럽게 말해 보세요.',
+          ok: '응! 다음엔 꼭 먼저 물어볼게.', no: '…나랑은 안 놀아 줄 거지?' },
+        { say: '내가 다시 만드는 거 도와줘도 돼?', tip: '함께하자는 말로 대답해 보세요.',
+          ok: '신난다! 내가 블록 찾아올게!', no: '…알았어. 저리 가 있을게.' },
+        { say: '다 만들면 나도 한 번만 갖고 놀아도 돼?', tip: '약속을 정하면서 허락해 보세요.',
+          ok: '야호! 조심조심 갖고 놀게!', no: '…치, 이제 안 물어볼 거야.' },
+      ],
+      end: {
+        good: ['🏰', '둘이 함께 다시 쌓은 성', '화가 났지만 마음을 말로 잘 전했어요. 동생과 함께 만든 성은 전보다 더 멋져요.'],
+        mid: ['😐', '반쯤 풀린 마음', '성은 다시 만들었지만 동생은 내 눈치를 보고 있어요. 어떤 말이 더 필요했을까요?'],
+        bad: ['😭', '울어 버린 동생', '동생은 울면서 방을 나갔어요. 화난 마음을 다른 말로 전할 수는 없었을까요?'],
+      },
+    },
+    {
+      id: 'room', emoji: '💬', title: '단체 대화방에서 친구를 놀려요', who: { name: '현우', emoji: '📱' }, moodLabel: '대화방 온도',
+      sit: '반 단체 대화방에서 현우가 지아의 발표 실수를 놀리는 글을 올렸어요. 지아도 이 방에 있어요.',
+      mission: '같이 놀리지 않고 놀림을 멈추게 하기',
+      fix: '어… 다시 보니까 네 말이 맞는 것 같아.', unk: '? 무슨 말이야 ㅋㅋ',
+      stages: [
+        { say: 'ㅋㅋㅋ 아까 지아 발표하다가 틀린 거 봤어? 완전 웃겼음', tip: '같이 놀리지 말고, 지아 편에서 말해 보세요.',
+          ok: '어… 그런가? 나는 그냥 웃자고 한 말인데.', no: 'ㅋㅋㅋ 그치? 너도 그렇게 생각하지?' },
+        { say: '근데 지아도 이 방에 있잖아. 설마 기분 나빴으려나?', tip: '지아의 마음이 어떨지 말해 보세요.',
+          ok: '듣고 보니 내가 좀 심했네…', no: 'ㅋㅋ 에이, 장난인데 뭐 어때.' },
+        { say: '그럼 나 이제 어떻게 해야 돼?', tip: '사과를 권하는 말을 해 보세요.',
+          ok: '알겠어. 지아한테 사과할게.', no: '됐어, 그냥 모른 척할래.' },
+        { say: '(지아) 얘들아… 나 사실 아까 많이 창피했어.', tip: '지아를 위로하고 응원하는 말을 해 보세요.',
+          ok: '(지아) 고마워… 네 덕분에 기분이 나아졌어.', no: '(지아) …나 이 방 나갈게.' },
+      ],
+      end: {
+        good: ['🌈', '따뜻해진 대화방', '현우는 지아에게 사과했고 대화방은 응원하는 말로 가득 찼어요. 내 말 한마디가 분위기를 바꿨어요.'],
+        mid: ['😐', '조용해진 대화방', '놀림은 멈췄지만 지아는 아직 아무 말이 없어요. 어떤 말이 더 필요했을까요?'],
+        bad: ['🚪', '지아가 나간 대화방', "'지아 님이 나갔습니다.' 글자로 한 말도 진짜 말처럼 마음에 남아요."],
+      },
+    },
+  ];
+  const SCENE = Object.fromEntries(SCENES.map(c => [c.id, c]));
+  const MOOD_MAX = 5, MOOD_START = 2;
   const MAX_Q = 15;
   const KEY = 'cleanbot-v2';
 
@@ -736,6 +993,8 @@
     round: null,                // 지금 하는 대화 { partner, qs, i, log }
     results: {},                // 상대별 마지막 대화 결과
     lastPartner: null,
+    scene: null,                // 지금 하는 상황극 { id, i, mood, log, done }
+    sceneDone: {},              // 상황별 마지막 결말 (good | mid | bad)
     panel: 'words',
     maxLevel: 0,                // 지금까지 도달한 성장 단계
   });
@@ -762,6 +1021,7 @@
           if (!Array.isArray(q) || oldDefault) s.qsets[k] = [...PARTNERS[k].questions];
         });
         if (v.maxLevel == null) s.maxLevel = levelOf(s.good.length + s.bad.length);
+        if (s.scene && !SCENE[s.scene.id]) s.scene = null;
         return s;
       }
     } catch (e) {}
@@ -804,7 +1064,7 @@
   /* ───────── 화면 이동 ───────── */
   let busy = false;   // 대화 중 판정하는 동안에는 화면을 옮기지 않아요
   function canGo(p) {
-    if (p === 'chat') return !!S.learned;
+    if (p === 'chat' || p === 'scene') return !!S.learned;
     if (p === 'result') return !!S.lastPartner;
     if (p === 'questions') return S.unlocked;
     return true;
@@ -818,11 +1078,12 @@
     if (p === 'chat') renderChat();
     if (p === 'result') renderResult();
     if (p === 'questions') renderQuestions();
+    if (p === 'scene') renderScene();
     save();
     window.scrollTo({ top: 0 });
   }
   function renderSteps() {
-    const done = { words: S.good.length && S.bad.length, train: !!S.learned, chat: !!S.lastPartner, result: S.unlocked };
+    const done = { words: S.good.length && S.bad.length, train: !!S.learned, chat: !!S.lastPartner, result: S.unlocked, scene: Object.keys(S.sceneDone).length };
     document.querySelectorAll('#steps button').forEach(b => {
       const p = b.dataset.go;
       b.classList.toggle('on', p === S.panel);
@@ -1045,26 +1306,35 @@
   }
 
   const chat = $('chat');
-  // who: 'me' | 'bot'(클린봇 판정) | 'partner'(대화 상대의 질문)
+  // 대화하기와 상황 속으로가 말풍선·입력창 기능을 함께 써요
+  const UIS = {
+    chat: { box: chat, input: $('answer'), btn: $('sendBtn'),
+      who: () => ({ ...PARTNERS[S.round.partner], cls: S.round.partner }) },
+    scene: { box: $('sceneChat'), input: $('sceneAnswer'), btn: $('sceneSend'),
+      who: () => ({ ...SCENE[S.scene.id].who, cls: 'friend' }) },
+  };
+  let UI = UIS.chat;
+  // who: 'me' | 'bot'(클린봇 판정) | 'partner'(대화 상대의 말) | 'narr'(상황 안내)
   function bubble(who, html, cls = '') {
-    const P = PARTNERS[S.round.partner];
+    const P = UI.who();
     const row = document.createElement('div');
     row.className = 'row' + (who === 'me' ? ' me' : '');
-    const ava = who === 'me' ? '🙋' : who === 'partner' ? P.emoji : '🤖';
-    const name = who === 'me' ? '나' : who === 'partner' ? P.name : '인공지능 클린봇';
-    const avaCls = who === 'partner' ? S.round.partner : '';
+    const ava = { me: '🙋', partner: P.emoji, narr: '🎬', bot: '🤖' }[who];
+    const name = { me: '나', partner: P.name, narr: '상황', bot: '인공지능 클린봇' }[who];
+    const avaCls = who === 'partner' ? P.cls : who === 'narr' ? 'narr' : '';
     row.innerHTML = `<div class="ava ${avaCls}">${ava}</div><div><span class="who">${name}</span><div class="bubble ${cls}">${html}</div></div>`;
-    chat.appendChild(row);
-    chat.scrollTop = chat.scrollHeight;
+    UI.box.appendChild(row);
+    UI.box.scrollTop = UI.box.scrollHeight;
     return row.querySelector('.bubble');
   }
 
   function setInput(on) {
-    $('answer').disabled = $('sendBtn').disabled = !on;
-    if (on) $('answer').focus();
+    UI.input.disabled = UI.btn.disabled = !on;
+    if (on) UI.input.focus();
   }
 
   function renderChat() {
+    UI = UIS.chat;
     const r = S.round;
     $('pick').hidden = !!r;
     $('talk').hidden = !r;
@@ -1107,7 +1377,7 @@
     $('progress').textContent = `질문 ${Math.min(r.i + 1, r.qs.length)} / ${r.qs.length}`;
     if (r.i >= r.qs.length) { setInput(false); return finishRound(); }
     if (!redraw) await wait(500);
-    if (S.round !== r) return;
+    if (S.round !== r || S.panel !== 'chat') return;
     bubble('partner', esc(r.qs[r.i]), 'ask');
     setInput(true);
   }
@@ -1117,7 +1387,7 @@
   function askAnswer(placeholder) {
     return new Promise(resolve => {
       waiter = resolve;
-      $('answer').placeholder = placeholder;
+      UI.input.placeholder = placeholder;
       setInput(true);
     });
   }
@@ -1217,7 +1487,7 @@
         </div>`;
       const input = b.querySelector('input');
       input.focus(); input.select();
-      chat.scrollTop = chat.scrollHeight;
+      UI.box.scrollTop = UI.box.scrollHeight;
       const pick = kind => {
         if (!kind) { b.innerHTML = '🤔 이 말은 아직 배우지 않아서 잘 모르겠어요.'; return resolve(null); }
         const w = input.value.trim().replace(/\s+/g, ' ');
@@ -1305,6 +1575,10 @@
     S.round = null; show('chat');
   });
   $('moreWords').addEventListener('click', () => show('words'));
+  $('toScene').addEventListener('click', () => {
+    if (!sameWords()) { toast('바구니가 바뀌었어요. 먼저 다시 학습시켜 주세요'); return show('train'); }
+    show('scene');
+  });
   $('toQuestions').addEventListener('click', () => { S.qtab = S.lastPartner || 'bot'; show('questions'); });
 
   /* ───────── 질문 만들기 ───────── */
@@ -1356,12 +1630,253 @@
     startRound(S.qtab);
   });
 
+  /* ───────── 상황 속으로 (상황극) ─────────
+     한 가지 상황 안에서 이야기가 이어져요. 클린봇의 판단에 따라
+     상대의 반응과 마음 온도가 달라지고, 마음 온도에 따라 결말이 달라져요. */
+  const tierOf = mood => mood >= 4 ? 'good' : mood >= 2 ? 'mid' : 'bad';
+  const hearts = mood => '💗'.repeat(mood) + '🤍'.repeat(MOOD_MAX - mood);
+  const wordsOf = arr => arr.map(w => `'${esc(w)}'`).join(', ');
+  const SCENE_PH = '내가 할 말을 써 보세요';
+
+  function renderScenePick() {
+    $('scenes').innerHTML = SCENES.map(c => {
+      const t = S.sceneDone[c.id];
+      const tag = t ? `<span class="tag2">${c.end[t][0]} ${c.end[t][1]}</span>` : '';
+      return `<button class="scene-card pressable" data-scene="${c.id}">
+        <span class="se">${c.emoji}</span>
+        <b>${c.title}</b>
+        <span class="sw">${c.who.emoji} ${c.who.name}${josa(c.who.name)} 이야기해요</span>
+        <span class="sm">🎯 ${c.mission}</span>
+        ${tag}
+      </button>`;
+    }).join('');
+  }
+  $('scenes').addEventListener('click', e => {
+    const b = e.target.closest('[data-scene]');
+    if (b) startScene(b.dataset.scene);
+  });
+
+  function startScene(id) {
+    if (!sameWords()) { toast('바구니가 바뀌었어요. 먼저 다시 학습시켜 주세요'); return show('train'); }
+    S.scene = { id, i: 0, mood: MOOD_START, log: [], done: false };
+    save();
+    show('scene');
+  }
+
+  function setMood(d) {
+    const s = S.scene;
+    if (d) s.mood = Math.max(0, Math.min(MOOD_MAX, s.mood + d));
+    $('hearts').textContent = hearts(s.mood);
+    const el = $('mood'), dl = $('moodDelta');
+    dl.textContent = d > 0 ? '따뜻해졌어요 ▲' : d < 0 ? '차가워졌어요 ▼' : '';
+    dl.className = 'delta ' + (d > 0 ? 'plus' : d < 0 ? 'minus' : '');
+    if (d) { el.classList.remove('up', 'down'); void el.offsetWidth; el.classList.add(d > 0 ? 'up' : 'down'); }
+  }
+
+  const sceneVerdict = (C, l) => l.verdict === 'ok'
+    ? `😊 착한 말이에요! (${wordsOf(l.good)} 발견)`
+    : l.verdict === 'no'
+      ? `🚨 나쁜 말이에요! (${wordsOf(l.bad)} 발견)\n클린봇이 지웠지만, 말은 벌써 ${C.who.name}의 마음에 닿았어요.`
+      : '🤔 모르는 말이라 클린봇은 판단하지 못했어요.';
+
+  function drawStage(C, k) {
+    const st = C.stages[k];
+    if (st.cue) bubble('narr', esc(st.cue), 'narr');
+    if (st.say) bubble('partner', esc(st.say), 'ask');
+  }
+
+  function renderScene() {
+    UI = UIS.scene;
+    const s = S.scene;
+    $('scenePick').hidden = !!s;
+    $('sceneTalk').hidden = !s || s.done;
+    $('sceneEnd').hidden = !s || !s.done;
+    $('sceneProgress').hidden = $('sceneSwitch').hidden = !s || s.done;
+    if (!s) {
+      $('sceneTitle').textContent = '🎭 상황 속으로';
+      $('sceneSub').textContent = '어떤 상황으로 들어가 볼까요? 이야기 속 주인공이 되어 말해 보세요.';
+      return renderScenePick();
+    }
+    const C = SCENE[s.id];
+    $('sceneTitle').textContent = `${C.emoji} ${C.title}`;
+    if (s.done) return renderEnding();
+    $('sceneSub').textContent = `${C.who.name}${josa(C.who.name)} 이야기해 보세요. 내 말에 따라 이야기가 달라져요.`;
+    $('sceneSit').textContent = C.sit;
+    $('sceneMission').textContent = '🎯 미션: ' + C.mission;
+    $('moodLabel').textContent = C.moodLabel || `${C.who.name}의 마음 온도`;
+    setMood(0);
+    UI.box.innerHTML = '';
+    // 이미 한 이야기 다시 그리기
+    s.log.forEach((l, k) => {
+      const st = C.stages[k];
+      drawStage(C, k);
+      if (l.verdict === 'no') bubble('me', '🧹 클린봇이 삭제한 말이에요', 'deleted');
+      else bubble('me', highlight(l.a, l.bad, l.good), l.verdict === 'ok' ? 'passed' : '');
+      bubble('bot', sceneVerdict(C, l), l.verdict);
+      bubble('partner', esc(l.verdict === 'ok' ? st.ok : l.verdict === 'no' ? st.no : C.unk), 'ask');
+      if (l.fixed) {
+        bubble('me', highlight(l.fixed.a, [], l.fixed.good), 'passed');
+        bubble('bot', fixedSceneText(l.fixed), 'ok fixed');
+        bubble('partner', esc(C.fix), 'ask');
+      }
+    });
+    nextStage(true);
+  }
+  const fixedSceneText = f => `🌱 착한 말로 바꿨어요! (${wordsOf(f.good)} 발견)\n마음 온도가 다시 올라가요.`;
+
+  async function nextStage(redraw) {
+    const s = S.scene, C = SCENE[s.id], n = C.stages.length;
+    $('sceneProgress').textContent = `장면 ${Math.min(s.i + 1, n)} / ${n}`;
+    $('tipBtn').disabled = s.i >= n;
+    if (s.i >= n) { setInput(false); return finishScene(); }
+    if (!redraw) {
+      await wait(700);
+      if (S.scene !== s || S.panel !== 'scene') return;
+      drawStage(C, s.i);
+    } else drawStage(C, s.i);
+    setInput(true);
+  }
+
+  $('tipBtn').addEventListener('click', () => {
+    const s = S.scene;
+    if (!s || s.done || busy && !waiter) return;
+    bubble('narr', '💡 ' + esc(SCENE[s.id].stages[s.i].tip), 'narr');
+    $('tipBtn').disabled = true;
+    UI.input.focus();
+  });
+
+  // 모르는 말이면 그 자리에서 가르치고, 가르친 대로 다시 판단해요
+  async function judgeOrTeach(a, mine) {
+    let j = judge(a), taught = null;
+    if (j.verdict === 'unk') {
+      taught = await teachUnknown(a);
+      if (taught) {
+        j = judge(a);
+        mine.innerHTML = highlight(a, j.bad, j.good);
+        UI.box.lastElementChild.querySelector('.bubble').innerHTML =
+          `🤔 모르는 말이었어요.\n'${esc(taught.word)}'을(를) ${basketName(taught.kind)}로 새로 배웠어요!`;
+        await wait(500);
+      }
+    }
+    return { ...j, taught };
+  }
+
+  $('sceneSay').addEventListener('submit', async e => {
+    e.preventDefault();
+    const a = UI.input.value.trim();
+    if (!a) { UI.input.focus(); return; }
+    if (waiter) {
+      const w = waiter; waiter = null;
+      UI.input.value = '';
+      setInput(false);
+      return w(a);
+    }
+    if (busy) return;
+    busy = true;
+    setInput(false);
+    UI.input.value = '';
+    const s = S.scene, C = SCENE[s.id], st = C.stages[s.i];
+    const mine = bubble('me', esc(a));
+    await wait(600);
+    const l = { q: st.say || st.cue, a, ...(await judgeOrTeach(a, mine)) };
+    mine.innerHTML = highlight(a, l.bad, l.good);
+
+    if (l.verdict === 'ok') {
+      mine.classList.add('passed');
+      bubble('bot', sceneVerdict(C, l), 'ok');
+      await wait(600);
+      setMood(+1);
+      bubble('partner', esc(st.ok), 'ask');
+    } else if (l.verdict === 'no') {
+      bubble('bot', sceneVerdict(C, l), 'no');
+      await deleteBubble(mine);
+      setMood(-1);
+      bubble('partner', esc(st.no), 'ask');
+      await wait(900);
+      await sceneRetry(C, l);
+    } else {
+      await wait(400);
+      bubble('partner', esc(C.unk), 'ask');
+    }
+    UI.input.placeholder = SCENE_PH;
+    s.log.push(l);
+    s.i++;
+    save();
+    busy = false;
+    nextStage();
+  });
+
+  // 나쁜 말을 한 뒤에는 고쳐 말할 기회가 한 번 있어요
+  async function sceneRetry(C, l) {
+    bubble('bot', `✏️ 다시 말할 기회가 한 번 있어요!\n착한 말로 바꿔서 ${C.who.name}의 마음을 돌려 볼래요?`, 'retry');
+    const a2 = await askAnswer('착한 말로 바꿔서 다시 말해 보세요');
+    const mine2 = bubble('me', esc(a2));
+    await wait(600);
+    const j2 = await judgeOrTeach(a2, mine2);
+    mine2.innerHTML = highlight(a2, j2.bad, j2.good);
+    if (j2.verdict === 'ok') {
+      mine2.classList.add('passed');
+      l.fixed = { a: a2, good: j2.good };
+      bubble('bot', fixedSceneText(l.fixed), 'ok fixed');
+      await wait(600);
+      setMood(+1);
+      bubble('partner', esc(C.fix), 'ask');
+    } else if (j2.verdict === 'no') {
+      bubble('bot', `🚨 아직 나쁜 말이 있어요. (${wordsOf(j2.bad)} 발견)\n이야기는 이대로 이어져요.`, 'no');
+      await deleteBubble(mine2);
+    } else {
+      bubble('bot', '🤔 모르는 말이라 클린봇은 판단하지 못했어요. 이야기는 이대로 이어져요.', 'unk');
+    }
+  }
+
+  async function finishScene() {
+    const s = S.scene;
+    await wait(700);
+    if (S.scene !== s) return;
+    if (S.panel === 'scene') { bubble('narr', '🎬 이야기가 끝났어요! 어떤 결말이 되었을까요?', 'narr'); await wait(1300); }
+    if (S.scene !== s) return;
+    s.done = true;
+    S.sceneDone[s.id] = tierOf(s.mood);
+    save();
+    renderSteps();
+    if (S.panel === 'scene') renderScene();
+  }
+
+  function renderEnding() {
+    const s = S.scene, C = SCENE[s.id], t = tierOf(s.mood), [emo, title, text] = C.end[t];
+    $('sceneSub').textContent = '내가 한 말이 만든 결말이에요.';
+    $('ending').className = 'ending ' + t;
+    $('ending').innerHTML = `<div class="ee">${emo}</div><h3>${title}</h3><p>${text}</p>
+      <div class="hearts">${hearts(s.mood)}</div>`;
+    $('eOk').textContent = count(s.log, 'ok');
+    $('eNo').textContent = count(s.log, 'no');
+    $('eFix').textContent = s.log.filter(l => l.fixed).length;
+    $('sceneLog').innerHTML = s.log.map(l => `
+      <div class="log-row">
+        <span class="lq">${C.who.emoji} ${esc(l.q)}</span>
+        <span class="la">🙋 ${highlight(l.a, l.bad, l.good)}${l.fixed ? `<span class="fix-to">→ 🌱 ${highlight(l.fixed.a, [], l.fixed.good)}</span>` : ''}</span>
+        <span class="badge ${l.fixed ? 'fix' : l.verdict}">${l.fixed ? '🌱 고쳐 말함' : { ok: '😊 착한 말', no: '🚨 나쁜 말', unk: '🤔 모르는 말' }[l.verdict]}</span>
+      </div>`).join('');
+  }
+
+  $('sceneSwitch').addEventListener('click', async () => {
+    if (busy) return;
+    if (S.scene && S.scene.log.length) {
+      const ok = await ask({ emo: '🎭', title: '상황을 바꿀까요?', text: '지금 하던 이야기는 저장되지 않아요.', ok: '상황 바꾸기', cancel: '계속하기' });
+      if (!ok) return;
+    }
+    S.scene = null; save(); renderScene();
+  });
+  $('sceneAgain').addEventListener('click', () => startScene(S.scene.id));
+  $('sceneOther').addEventListener('click', () => { S.scene = null; save(); renderScene(); });
+  $('sceneWords').addEventListener('click', () => show('words'));
+
   /* ───────── 처음부터 다시 ───────── */
   $('reset').addEventListener('click', async () => {
     if (busy) return;
     const ok = await ask({
       emo: '🔄', title: '리셋할까요?',
-      text: '바구니의 단어, 학습한 내용, 내가 만든 질문, 대화 결과가 <b>모두 지워지고</b> 처음 상태로 돌아가요.',
+      text: '바구니의 단어, 학습한 내용, 내가 만든 질문, 대화와 상황극 결과가 <b>모두 지워지고</b> 처음 상태로 돌아가요.',
       ok: '리셋하기', cancel: '취소',
     });
     if (!ok) return;
