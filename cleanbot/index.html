@@ -271,6 +271,8 @@
   .teach .tg { background: var(--teal); }
   .teach .tb { background: var(--coral); color: #fff; }
   .teach .ts { background: #fff; }
+  .teach .tw { background: var(--yellow-soft); }
+  .teach .tw.on { background: var(--yellow); transform: translate(2px, 2px); box-shadow: none; }
 
   .say { display: flex; gap: 12px; margin-top: 18px; }
   .say input {
@@ -569,6 +571,7 @@
         <h4>3️⃣ 단어 가르치기 꿀팁</h4>
         <ul class="tips">
           <li><b>짧게 쓰면 넓게 찾아요.</b> '싫어'를 가르치면 '싫어요', '너무 싫어'도 찾아요.</li>
+          <li><b>끝말이 바뀌어도 알아들어요.</b> '미안해'를 가르치면 '미안합니다', '고마워'를 가르치면 '고맙습니다'도 찾아요.</li>
           <li><b>비슷한 말도 함께!</b> 짜증나 · 화나 · 열받아 · 답답해처럼 뜻이 비슷한 말을 모두 넣어 보세요.</li>
           <li><b>반말과 존댓말 둘 다!</b> 고마워 · 감사합니다, 알겠어 · 알겠습니다</li>
           <li><b>나쁜 말을 착한 말로 바꿔 보세요.</b> 귀찮아 → 이따 할게요, 짜증나 → 속상해</li>
@@ -1249,9 +1252,37 @@
 
   /* ───────── 3. 대화하기 ───────── */
   // 대답 속에서 학습한 단어 찾기 — 나쁜 말이 하나라도 있으면 삭제
+  // 끝말이 바뀌어도 알아듣기: '미안해'를 배우면 '미안합니다', '고마워'를 배우면 '고맙습니다'도 찾아요
+  const ENDINGS = ['하겠습니다', '했습니다', '합니다', '할게요', '할래요', '했어요', '하네요', '할게', '할래', '해요', '했어', '했다', '하다', '한다', '하네', '하지', '하고', '해',
+    '웠어요', '워요', '웠어', '워', '줄게요', '주세요', '줄게', '줘요', '줘', '습니다', '었어요', '았어요', '었어', '았어', '어요', '아요', '어', '아',
+    '났어요', '났어', '나요', '나', '내', '이에요', '예요', '이야', '야', '네요', '군요', '구나', '네', '죠', '니', '요', '다']
+    .sort((a, b) => b.length - a.length);
+  const formCache = new Map();
+  function forms(w) {
+    if (formCache.has(w)) return formCache.get(w);
+    const n = norm(w), out = [n];
+    for (const e of ENDINGS) {
+      if (n.length - e.length < 2 || !n.endsWith(e)) continue;   // 줄기가 두 글자 이상 남을 때만
+      const stem = n.slice(0, -e.length);
+      out.push(stem);
+      const c = stem.charCodeAt(stem.length - 1) - 0xac00;
+      if (c >= 0 && c < 11172) {
+        const swap = d => out.push(stem.slice(0, -1) + String.fromCharCode(0xac00 + c + d));
+        if (/^[워웠]/.test(e) && c % 28 === 0) swap(17);                 // 고마워 → 고맙(습니다)
+        if (c % 28 === 17 && /^(습니다|다|네|죠)/.test(e)) swap(-17);     // 고맙습니다 → 고마(워)
+      }
+      break;
+    }
+    formCache.set(w, out);
+    return out;
+  }
+  // 찾은 단어 보여 주기 — 똑같지 않고 끝말만 다르면 '비슷한 말'이라고 알려 줘요
+  const found = (text, arr) => arr.map(w =>
+    norm(text).includes(norm(w)) ? `'${esc(w)}'` : `'${esc(w)}'${josa(w)} 비슷한 말`).join(', ');
+
   function judge(text) {
     const t = norm(text);
-    const find = list => list.filter(w => norm(w) && t.includes(norm(w)));
+    const find = list => list.filter(w => norm(w) && forms(w).some(f => t.includes(f)));
     const bad = find(S.learned.bad), good = find(S.learned.good);
     return { verdict: bad.length ? 'no' : good.length ? 'ok' : 'unk', bad, good };
   }
@@ -1261,13 +1292,13 @@
     const idx = [], compact = [];
     [...text].forEach((ch, i) => { if (!/\s/.test(ch)) { idx.push(i); compact.push(ch.toLowerCase()); } });
     const c = compact.join('');
-    const paint = (w, cls) => {
-      const n = norm(w); let from = 0, at;
+    const paint = (w, cls) => forms(w).forEach(n => {
+      let from = 0, at;
       while (n && (at = c.indexOf(n, from)) !== -1) {
         for (let k = idx[at]; k <= idx[at + n.length - 1]; k++) if (!marks[k]) marks[k] = cls;
         from = at + 1;
       }
-    };
+    });
     bad.forEach(w => paint(w, 'b'));
     good.forEach(w => paint(w, 'g'));
     let out = '', cur = null;
@@ -1364,7 +1395,7 @@
   }
 
   function resultText(l) {
-    const words = arr => arr.map(w => `'${esc(w)}'`).join(', ');
+    const words = arr => found(l.a, arr);
     if (l.verdict === 'no') return `🚨 나쁜 말입니다. (${words(l.bad)} 발견)\n인공지능 클린봇이 나쁜 말을 삭제합니다.`;
     if (l.verdict === 'ok') return `😊 착한 말이에요! (${words(l.good)} 발견)\n클린봇이 통과시켜요.`;
     return l.taught
@@ -1454,7 +1485,7 @@
         return;
       }
       if (j2.verdict === 'no') {
-        bubble('bot', `🚨 아직 나쁜 말이 있어요. (${j2.bad.map(w => `'${esc(w)}'`).join(', ')} 발견)\n클린봇이 삭제합니다.`, 'no');
+        bubble('bot', `🚨 아직 나쁜 말이 있어요. (${found(a2, j2.bad)} 발견)\n클린봇이 삭제합니다.`, 'no');
         await deleteBubble(mine2);
         continue;
       }
@@ -1472,20 +1503,28 @@
       await deleteBubble(mine2);
     }
   }
-  const fixedText = f => `🌱 착한 말로 바꿨어요! (${f.good.map(w => `'${esc(w)}'`).join(', ')} 발견)\n정말 멋져요! 클린봇이 통과시켜요.`;
+  const fixedText = f => `🌱 착한 말로 바꿨어요! (${found(f.a, f.good)} 발견)\n정말 멋져요! 클린봇이 통과시켜요.`;
 
   // 모르는 말이면 그 자리에서 물어보고 배우기
   function teachUnknown(answer) {
     return new Promise(resolve => {
       const b = bubble('bot', '', 'unk');
-      b.innerHTML = `🤔 이 말은 아직 배우지 않아서 잘 모르겠어요.\n어떤 단어를 착한 말이나 나쁜 말로 가르쳐 줄래요?
+      // 문장을 단어로 나눠서, 눌러서 고를 수 있게 보여 줘요
+      const toks = [...new Set(answer.split(/\s+/).map(w => w.replace(/^[^가-힣a-z0-9]+|[^가-힣a-z0-9]+$/gi, '').slice(0, 15)).filter(Boolean))].slice(0, 8);
+      const many = toks.length > 1;
+      b.innerHTML = `🤔 이 말에는 내가 배운 단어가 없어요.\n${many ? '어떤 단어를 가르쳐 줄래요? 단어를 눌러서 골라 보세요.' : '이 단어를 착한 말이나 나쁜 말로 가르쳐 줄래요?'}
+        ${many ? `<div class="teach">${toks.map(w => `<button type="button" class="tw">${esc(w)}</button>`).join('')}</div>` : ''}
         <div class="teach">
-          <input type="text" maxlength="15" value="${esc(answer.slice(0, 15))}" aria-label="가르칠 단어">
+          <input type="text" maxlength="15" value="${many ? '' : esc(toks[0] || answer.slice(0, 15))}" placeholder="가르칠 단어" aria-label="가르칠 단어">
           <button type="button" class="tg">😊 착한 말</button>
           <button type="button" class="tb">😠 나쁜 말</button>
           <button type="button" class="ts">그냥 넘어가기</button>
         </div>`;
       const input = b.querySelector('input');
+      b.querySelectorAll('.tw').forEach(t => t.onclick = () => {
+        b.querySelectorAll('.tw').forEach(x => x.classList.toggle('on', x === t));
+        input.value = t.textContent;
+      });
       input.focus(); input.select();
       UI.box.scrollTop = UI.box.scrollHeight;
       const pick = kind => {
@@ -1635,7 +1674,6 @@
      상대의 반응과 마음 온도가 달라지고, 마음 온도에 따라 결말이 달라져요. */
   const tierOf = mood => mood >= 4 ? 'good' : mood >= 2 ? 'mid' : 'bad';
   const hearts = mood => '💗'.repeat(mood) + '🤍'.repeat(MOOD_MAX - mood);
-  const wordsOf = arr => arr.map(w => `'${esc(w)}'`).join(', ');
   const SCENE_PH = '내가 할 말을 써 보세요';
 
   function renderScenePick() {
@@ -1674,9 +1712,9 @@
   }
 
   const sceneVerdict = (C, l) => l.verdict === 'ok'
-    ? `😊 착한 말이에요! (${wordsOf(l.good)} 발견)`
+    ? `😊 착한 말이에요! (${found(l.a, l.good)} 발견)`
     : l.verdict === 'no'
-      ? `🚨 나쁜 말이에요! (${wordsOf(l.bad)} 발견)\n클린봇이 지웠지만, 말은 벌써 ${C.who.name}의 마음에 닿았어요.`
+      ? `🚨 나쁜 말이에요! (${found(l.a, l.bad)} 발견)\n클린봇이 지웠지만, 말은 벌써 ${C.who.name}의 마음에 닿았어요.`
       : '🤔 모르는 말이라 클린봇은 판단하지 못했어요.';
 
   function drawStage(C, k) {
@@ -1722,7 +1760,7 @@
     });
     nextStage(true);
   }
-  const fixedSceneText = f => `🌱 착한 말로 바꿨어요! (${wordsOf(f.good)} 발견)\n마음 온도가 다시 올라가요.`;
+  const fixedSceneText = f => `🌱 착한 말로 바꿨어요! (${found(f.a, f.good)} 발견)\n마음 온도가 다시 올라가요.`;
 
   async function nextStage(redraw) {
     const s = S.scene, C = SCENE[s.id], n = C.stages.length;
@@ -1822,7 +1860,7 @@
       setMood(+1);
       bubble('partner', esc(C.fix), 'ask');
     } else if (j2.verdict === 'no') {
-      bubble('bot', `🚨 아직 나쁜 말이 있어요. (${wordsOf(j2.bad)} 발견)\n이야기는 이대로 이어져요.`, 'no');
+      bubble('bot', `🚨 아직 나쁜 말이 있어요. (${found(a2, j2.bad)} 발견)\n이야기는 이대로 이어져요.`, 'no');
       await deleteBubble(mine2);
     } else {
       bubble('bot', '🤔 모르는 말이라 클린봇은 판단하지 못했어요. 이야기는 이대로 이어져요.', 'unk');
