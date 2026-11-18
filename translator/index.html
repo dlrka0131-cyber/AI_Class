@@ -183,26 +183,20 @@
   }
   .idk { grid-column: span 12; }
   .idk-btn {
-    font: inherit; font-size: 1rem; font-weight: 800;
-    padding: 8px 16px; border-radius: 999px; cursor: pointer;
+    margin-left: auto; flex: none;
+    font: inherit; font-size: .85rem; font-weight: 800;
+    padding: 5px 12px; border-radius: 999px; cursor: pointer;
     border: 2px dashed #c4b5fd; background: #faf7ff; color: #6d28d9;
   }
   .idk-btn:hover { background: #f1eaff; }
   .idk-panel {
     margin-top: 10px; padding: 14px 18px;
-    display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px;
+    display: grid; 
     border-radius: 16px; background: #faf7ff; border: 2px solid #e2dcf7;
     font-size: 1rem; color: var(--ink);
   }
   .idk-panel[hidden] { display: none; }
   .idk-q ul { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; font-weight: 600; }
-  .idk-chips > div { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .chip {
-    font: inherit; font-size: .98rem; font-weight: 800; cursor: pointer;
-    padding: 8px 14px; border-radius: 999px;
-    border: 2px solid #f5e08e; background: #fff9db; color: var(--ink);
-  }
-  .chip:hover { background: #ffef9c; transform: translateY(-1px); }
   #fAge    { background-color: #fff1e6; border-color: #fbd3b6; }
   #fGender { background-color: #ffeef5; border-color: #f7c6dc; }
   #fJob    { background-color: #fff9db; border-color: #f5e08e; }
@@ -499,6 +493,7 @@
         <h2>미래의 내 모습 만들기</h2>
         <p>칸을 채우면 문장이 저절로 만들어져요. 빈칸은 건너뛰어도 괜찮아요.</p>
       </div>
+      <button type="button" class="idk-btn" id="idkBtn" aria-expanded="false">🤔 나도 모르겠어요</button>
     </div>
 
     <div class="fields">
@@ -520,11 +515,10 @@
 
       <label class="f cl">
         <span class="lbl"><span class="emo">💼</span>미래 직업 · 하고 싶은 일</span>
-        <input type="text" id="fJob" placeholder="꼭 직업이 아니어도 돼요! 예) 학생들을 가르치는, 동물을 돌보는">
+        <input type="text" id="fJob" placeholder="꼭 직업이 아니어도 돼요!">
       </label>
 
       <div class="idk">
-        <button type="button" class="idk-btn" id="idkBtn" aria-expanded="false">🤔 나도 모르겠어요</button>
         <div class="idk-panel" id="idkPanel" hidden>
           <div class="idk-q">
             <b>이런 질문에 답해 보세요</b>
@@ -533,19 +527,6 @@
               <li>친구들이 "너 이거 잘한다!" 하고 말해 준 적 있나요?</li>
               <li>시간이 많다면 하루 종일 하고 싶은 일은요?</li>
             </ul>
-          </div>
-          <div class="idk-chips">
-            <b>마음에 드는 걸 눌러 보세요</b>
-            <div>
-              <button type="button" class="chip">👩‍🏫 학생들을 가르치는</button>
-              <button type="button" class="chip">🐶 동물을 돌보는</button>
-              <button type="button" class="chip">🎮 게임을 만드는</button>
-              <button type="button" class="chip">🚀 우주를 탐험하는</button>
-              <button type="button" class="chip">🍰 맛있는 음식을 만드는</button>
-              <button type="button" class="chip">⚽ 운동을 하는</button>
-              <button type="button" class="chip">🎨 그림을 그리는</button>
-              <button type="button" class="chip">🩺 아픈 사람을 도와주는</button>
-            </div>
           </div>
         </div>
       </div>
@@ -732,11 +713,6 @@
     const p = $('idkPanel'); p.hidden = !p.hidden;
     $('idkBtn').setAttribute('aria-expanded', String(!p.hidden));
   });
-  document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
-    $('fJob').value = c.textContent.replace(/^\S+\s+/, '');
-    updatePreview();
-    $('fJob').focus();
-  }));
 
   buildBtn.addEventListener('click', () => {
     const sentence = buildSentence();
