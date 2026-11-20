@@ -536,7 +536,7 @@
       <div class="basket good">
         <h3>😊 착한 말 바구니 <span class="cnt" id="goodCnt">0개</span></h3>
         <form class="add" data-kind="good">
-          <input type="text" maxlength="15" placeholder="착한 말을 쓰고 스페이스!" aria-label="착한 말">
+          <input type="text" maxlength="15" placeholder="착한 말을 쓰고 Enter!" aria-label="착한 말">
           <button type="submit" class="pressable">넣기</button>
         </form>
         <div class="chips" id="goodChips"></div>
@@ -544,7 +544,7 @@
       <div class="basket bad">
         <h3>😠 나쁜 말 바구니 <span class="cnt" id="badCnt">0개</span></h3>
         <form class="add" data-kind="bad">
-          <input type="text" maxlength="15" placeholder="나쁜 말을 쓰고 스페이스!" aria-label="나쁜 말">
+          <input type="text" maxlength="15" placeholder="나쁜 말을 쓰고 Enter!" aria-label="나쁜 말">
           <button type="submit" class="pressable">넣기</button>
         </form>
         <div class="chips" id="badChips"></div>
@@ -1150,7 +1150,7 @@
     const box = $(kind + 'Chips');
     const list = S[kind];
     $(kind + 'Cnt').textContent = list.length + '개';
-    box.innerHTML = list.length ? '' : `<span class="empty">아직 비어 있어요. 단어를 쓰고 스페이스나 Enter를 누르면 쏙 들어가요.</span>`;
+    box.innerHTML = list.length ? '' : `<span class="empty">아직 비어 있어요. 단어를 쓰고 Enter를 누르면 쏙 들어가요. '다음에 할게'처럼 띄어 쓴 말도 한 덩어리로 들어가요.</span>`;
     list.forEach((w, i) => {
       const c = document.createElement('span');
       c.className = i === freshIdx ? 'chip new' : 'chip';
@@ -1182,7 +1182,7 @@
       if (addWord(f.dataset.kind, input.value)) input.value = '';
       input.focus();
     });
-    // 스페이스를 누르면 지금 단어를 넣고 바로 다음 단어를 쓸 수 있어요
+    // 띄어 쓴 말은 한 덩어리로 넣어요 (Enter나 넣기 버튼으로만 넣어요)
     // (한글 조합이 끝난 뒤에 처리해요. 띄어쓰기는 어차피 무시하고 비교해요)
     const splitWords = () => {
       if (!/\s/.test(input.value)) return;
@@ -1191,8 +1191,6 @@
       parts.filter(Boolean).forEach(w => addWord(f.dataset.kind, w));
       input.value = rest;
     };
-    input.addEventListener('input', e => { if (!e.isComposing) splitWords(); });
-    input.addEventListener('compositionend', () => setTimeout(splitWords));
   });
   $('toTrain').addEventListener('click', () => show('train'));
 
